@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "dashboard": "Robot Dashboard",
+    "scan": "Plant Disease Scanner",
+    "history": "Scan History",
+    "analytics": "Field Analytics",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "header": {
+    "title": "AgriDoc Dashboard",
+    "tagline": "AI Precision Agriculture & Robot Telemetry",
+    "robotStatus": "Robot Status",
+    "battery": "Battery",
+    "selectLang": "Select Language",
+    "demoMode": "Farmer Demo Mode"
+  },
+  "robot": {
+    "title": "AgriRobot Telemetry & Field Map",
+    "liveFeed": "ESP32 Live Feed",
+    "location": "Live Coordinates",
+    "status": "Current Status",
+    "statusCutting": "Cutting Weed",
+    "statusScanning": "Scanning Crops",
+    "statusIdle": "Docked / Idle",
+    "battery": "Battery Power",
+    "speed": "Operating Speed",
+    "scannedArea": "Area Scanned Today",
+    "totalScans": "Total Crop Scans",
+    "activeAlerts": "Active Outbreak Alerts",
+    "startScan": "Start Crop Scan",
+    "startCutting": "Start Weed Cutting",
+    "pause": "Pause Robot",
+    "returnDock": "Return to Dock"
+  },
+  "scanner": {
+    "title": "Plant Leaf Scanner",
+    "subtitle": "Upload a crop leaf photo or capture directly from AgriRobot's ESP32 camera",
+    "dragDrop": "Drag & drop crop photo here, or browse",
+    "captureEsp32": "Capture Frame from ESP32",
+    "scanningBtn": "Analyzing with YOLO Model...",
+    "scanNow": "Analyze Plant Disease",
+    "resultTitle": "AI Disease Diagnosis",
+    "diseaseName": "Detected Issue",
+    "cropType": "Crop Type",
+    "confidence": "AI Confidence",
+    "urgency": "Urgency Level",
+    "cause": "Possible Cause",
+    "solution": "Recommended Action Plan",
+    "playVoice": "Play Voice Guidance",
+    "playing": "Playing Audio...",
+    "gpsCaptured": "GPS Location Captured"
+  },
+  "history": {
+    "title": "Scan History & Outbreak Logs",
+    "filterCrop": "Filter by Crop",
+    "filterDisease": "Filter by Disease",
+    "filterUrgency": "Filter Severity",
+    "allCrops": "All Crops",
+    "allDiseases": "All Diseases",
+    "allUrgency": "All Levels",
+    "searchPlaceholder": "Search by disease name or crop...",
+    "date": "Date & Time",
+    "crop": "Crop",
+    "disease": "Disease",
+    "urgency": "Urgency",
+    "actions": "Actions",
+    "viewReport": "View Details",
+    "playVoice": "Listen"
+  },
+  "analytics": {
+    "title": "Field Health Analytics",
+    "topDiseases": "Top 5 Diseases This Month",
+    "cropHealth": "Crop Health Breakdown",
+    "trends": "Monthly Scan & Infection Trends",
+    "healthy": "Healthy Crops",
+    "mild": "Mild Infection",
+    "severe": "Severe Outbreak"
+  },
+  "reportModal": {
+    "title": "Comprehensive Disease Report",
+    "scannedOn": "Scanned On",
+    "gpsLocation": "Field GPS",
+    "playAudio": "Play Voice Advisory",
+    "close": "Close Report",
+    "downloadPdf": "Download PDF Summary"
+  },
+  "login": {
+    "title": "AgriDoc Farmer Portal",
+    "subtitle": "Sign in with your registered phone number or test with instant demo mode",
+    "phoneLabel": "Mobile Phone Number",
+    "phonePlaceholder": "+91 98765 43210",
+    "sendOtp": "Send Phone OTP",
+    "enterOtp": "Enter 6-Digit OTP",
+    "verifyOtp": "Verify & Login",
+    "demoLogin": "Quick Login (Demo Farmer)",
+    "loginSuccess": "Successfully logged in!"
+  }
+}
