@@ -41,7 +41,7 @@ export default function Sidebar() {
           { to: '/', label: 'Farmer Dashboard', icon: Bot, badge: 'HUB' },
           { to: '/scan', label: 'AI Leaf Health Scan', icon: ScanLine, badge: 'YOLOv8' },
           { to: '/history', label: 'My Scan Records', icon: History },
-          { to: '/showcase', label: 'Canva Showcase', icon: Sparkles },
+          { to: '/home', label: 'Platform Overview', icon: Sparkles },
           { to: '/settings', label: 'Dialect & Profile', icon: SettingsIcon },
         ];
     }

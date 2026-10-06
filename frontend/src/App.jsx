@@ -29,6 +29,8 @@ function PageLoader() {
 }
 
 function MainLayout() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-[#f4f9f5] text-slate-800 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
       <Header />
@@ -42,6 +44,15 @@ function MainLayout() {
               {/* Authenticated Role-Aware Routes */}
               <Route
                 path="/"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.FARMER, ROLES.OPERATOR, ROLES.ADMIN]}>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/dashboard"
                 element={
                   <ProtectedRoute allowedRoles={[ROLES.FARMER, ROLES.OPERATOR, ROLES.ADMIN]}>
                     <Dashboard />
@@ -94,9 +105,9 @@ function MainLayout() {
                 }
               />
 
-              {/* Public Showcase preview */}
+              {/* Public Home Overview Route */}
               <Route
-                path="/showcase"
+                path="/home"
                 element={<LandingHome onLoginSuccess={() => {}} />}
               />
 
@@ -111,15 +122,34 @@ function MainLayout() {
   );
 }
 
+function AppRoutes() {
+  const { user } = useAuth();
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        {/* If user is not logged in and lands on root '/', show the Home Page! */}
+        <Route
+          path="/"
+          element={
+            user ? <MainLayout /> : <LandingHome onLoginSuccess={() => {}} />
+          }
+        />
+        <Route path="/home" element={<LandingHome onLoginSuccess={() => {}} />} />
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login onLoginSuccess={() => {}} />} />
+        {/* All authenticated dashboard pages */}
+        <Route path="/*" element={<MainLayout />} />
+      </Routes>
+    </Suspense>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <ToastProvider>
         <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login onLoginSuccess={() => {}} />} />
-            <Route path="/*" element={<MainLayout />} />
-          </Routes>
+          <AppRoutes />
         </BrowserRouter>
       </ToastProvider>
     </AuthProvider>

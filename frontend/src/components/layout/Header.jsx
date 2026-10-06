@@ -94,13 +94,13 @@ export default function Header() {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Showcase Quick Link */}
+            {/* Home Quick Link */}
             <button
-              onClick={() => navigate('/showcase')}
+              onClick={() => navigate('/home')}
               className="hidden lg:flex items-center gap-1.5 rounded-xl bg-white border border-emerald-300 px-3 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-50 transition-all shadow-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Showcase</span>
+              <span>Home Page</span>
             </button>
 
             {/* Language Switcher */}

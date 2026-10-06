@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 import { 
   Sprout, 
   Bot, 
@@ -19,7 +21,8 @@ import {
   Radio, 
   Compass, 
   CheckCircle,
-  Wifi
+  Wifi,
+  LayoutDashboard
 } from 'lucide-react';
 import Login from './Login';
 
@@ -33,9 +36,21 @@ const LANGUAGES = [
 ];
 
 export default function LandingHome({ onLoginSuccess }) {
+  const navigate = useNavigate();
+  const { user, loginWithDemo } = useAuth();
   const { t, i18n } = useTranslation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeVoiceDemo, setActiveVoiceDemo] = useState(null);
+
+  const handleLaunchDashboard = () => {
+    if (user) {
+      navigate('/');
+    } else {
+      loginWithDemo('farmer');
+      if (onLoginSuccess) onLoginSuccess({ role: 'farmer' });
+      navigate('/');
+    }
+  };
 
   const handleLanguageChange = (e) => {
     i18n.changeLanguage(e.target.value);
@@ -96,13 +111,24 @@ export default function LandingHome({ onLoginSuccess }) {
               </select>
             </div>
 
-            <button
-              onClick={() => setShowLoginModal(true)}
-              className="group relative inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-black text-white shadow-md shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-            >
-              <span>Farmer Login</span>
-              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            {user ? (
+              <button
+                onClick={() => navigate('/')}
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-black text-white shadow-md shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                <span>Go to Dashboard</span>
+                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-black text-white shadow-md shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                <span>Farmer Login</span>
+                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -133,8 +159,8 @@ export default function LandingHome({ onLoginSuccess }) {
           {/* Call to Actions */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <button
-              onClick={() => setShowLoginModal(true)}
-              className="flex items-center gap-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 px-8 py-4 text-sm font-black text-white shadow-lg shadow-emerald-600/25 hover:scale-105 active:scale-95 transition-all"
+              onClick={handleLaunchDashboard}
+              className="flex items-center gap-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 px-8 py-4 text-sm font-black text-white shadow-lg shadow-emerald-600/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
               <Sprout className="h-5 w-5" />
               <span>Launch Live Dashboard</span>
@@ -143,7 +169,7 @@ export default function LandingHome({ onLoginSuccess }) {
 
             <button
               onClick={() => playVoiceSample(i18n.language || 'en', 'Welcome to AgriDoc. Your tomato field scan indicates early blight. Apply copper fungicide at two grams per litre.')}
-              className="flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-6 py-4 text-sm font-bold text-slate-700 hover:border-emerald-400 hover:text-emerald-800 transition-all shadow-sm"
+              className="flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-6 py-4 text-sm font-bold text-slate-700 hover:border-emerald-400 hover:text-emerald-800 transition-all shadow-sm cursor-pointer"
             >
               <Volume2 className={`h-5 w-5 ${activeVoiceDemo ? 'text-emerald-600 animate-bounce' : 'text-slate-500'}`} />
               <span>{activeVoiceDemo ? 'Playing Voice Advisory...' : 'Listen to Voice Demo'}</span>
@@ -195,8 +221,8 @@ export default function LandingHome({ onLoginSuccess }) {
               </div>
 
               <button
-                onClick={() => setShowLoginModal(true)}
-                className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 text-xs font-black text-white shadow-md transition-colors"
+                onClick={handleLaunchDashboard}
+                className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 text-xs font-black text-white shadow-md transition-colors cursor-pointer"
               >
                 <span>Explore Live Rover HUD</span>
                 <ArrowRight className="h-4 w-4" />

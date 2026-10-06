@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth, ROLES } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -89,18 +89,23 @@ export default function Login({ onLoginSuccess }) {
       {/* Top Header Ribbon */}
       <header className="w-full px-6 py-4 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-500 flex items-center justify-center shadow-md">
-            <Sprout className="h-6 w-6 text-white font-bold" />
-          </div>
-          <span className="text-xl font-black tracking-tight text-slate-900">
-            Agri<span className="text-emerald-600">Doc</span>
-          </span>
-          <span className="hidden sm:inline-block rounded-full bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 text-[10px] font-mono font-bold text-emerald-800 uppercase">
-            Canva Edition
-          </span>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+              <Sprout className="h-6 w-6 text-white font-bold" />
+            </div>
+            <span className="text-xl font-black tracking-tight text-slate-900">
+              Agri<span className="text-emerald-700">Doc</span>
+            </span>
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 rounded-xl bg-white border border-slate-200 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-300 transition-colors shadow-sm"
+          >
+            <span>Home</span>
+          </Link>
           <LanguageSwitcher />
         </div>
       </header>
