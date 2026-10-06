@@ -1,146 +1,249 @@
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Upload, Camera, Image as ImageIcon, MapPin, Sparkles, RefreshCw } from 'lucide-react';
+import { UploadCloud, Camera, Sparkles, Image as ImageIcon, AlertCircle, RefreshCw, Layers } from 'lucide-react';
+import Button from '../common/Button';
 
-export default function ImageUploader({ onScan, isScanning }) {
+const SAMPLE_LEAF_IMAGES = [
+  { name: 'Tomato Early Blight', url: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=600&auto=format&fit=crop&q=80', crop: 'Tomato' },
+  { name: 'Paddy Blast Disease', url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80', crop: 'Paddy' },
+  { name: 'Healthy Corn Leaf', url: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80', crop: 'Corn' },
+];
+
+export default function ImageUploader({ onScan, isScanning, uploadProgress = 0, onGrabEsp32Frame }) {
   const { t } = useTranslation();
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [gpsLocation, setGpsLocation] = useState('16.5062, 80.6480');
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [gpsLocation, setGpsLocation] = useState('16.5062, 80.6480');
 
-  const handleFileSelect = (file) => {
-    if (file && file.type.startsWith('image/')) {
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+  // Request browser GPS coords
+  const captureGps = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setGpsLocation(`${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`);
+        },
+        () => console.warn('Could not retrieve browser GPS, using field default.')
+      );
     }
+  };
+
+  const handleFileChange = (file) => {
+    if (!file) return;
+    setSelectedFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    captureGps();
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    setIsDragOver(false);
+    e.stopPropagation();
+    setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileSelect(e.dataTransfer.files[0]);
+      handleFileChange(e.dataTransfer.files[0]);
     }
   };
 
-  const handleCaptureEsp32 = async () => {
-    try {
-      // Fetch simulated ESP32 frame from backend
-      const response = await fetch('/api/esp32/frame');
-      const blob = await response.blob();
-      const file = new File([blob], 'esp32_frame.jpg', { type: 'image/jpeg' });
-      handleFileSelect(file);
-    } catch (err) {
-      console.error('ESP32 Capture Error:', err);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleDrag = (e) => {
     e.preventDefault();
-    if (selectedFile && !isScanning) {
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleSampleSelect = async (sample) => {
+    try {
+      setPreviewUrl(sample.url);
+      const res = await fetch(sample.url);
+      const blob = await res.blob();
+      const file = new File([blob], `${sample.crop.toLowerCase()}_sample.jpg`, { type: 'image/jpeg' });
+      setSelectedFile(file);
+    } catch (err) {
+      console.warn('Could not load sample directly, using preview:', err);
+    }
+  };
+
+  const handleTriggerScan = () => {
+    if (selectedFile) {
       onScan(selectedFile, gpsLocation);
     }
   };
 
+  const clearSelection = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (cameraInputRef.current) cameraInputRef.current.value = '';
+  };
+
   return (
-    <div className="glass-card rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl">
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-emerald-400" />
-          {t('scanner.title')}
-        </h3>
-        <p className="text-xs text-slate-400">{t('scanner.subtitle')}</p>
+    <div className="space-y-6">
+      {/* Hidden File & Camera Inputs */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleFileChange(e.target.files[0])}
+        className="hidden"
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(e) => handleFileChange(e.target.files[0])}
+        className="hidden"
+      />
+
+      {/* Main Drag-and-Drop / Preview Dropzone */}
+      <div
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        className={`relative rounded-3xl border-2 border-dashed p-6 sm:p-10 transition-all text-center flex flex-col items-center justify-center min-h-[300px] overflow-hidden ${
+          dragActive
+            ? 'border-emerald-400 bg-emerald-500/10 scale-[1.01]'
+            : 'border-slate-800 bg-slate-900/80 hover:border-emerald-500/50 hover:bg-slate-900/95'
+        }`}
+      >
+        {previewUrl ? (
+          <div className="relative w-full max-w-md space-y-4">
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-emerald-500/40 shadow-2xl bg-slate-950">
+              <img
+                src={previewUrl}
+                alt="Selected Crop Leaf"
+                className="h-full w-full object-cover"
+              />
+              {isScanning && (
+                <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm flex flex-col items-center justify-center p-4 space-y-3">
+                  <div className="relative h-14 w-14">
+                    <div className="animate-spin rounded-full h-14 w-14 border-4 border-emerald-500 border-t-transparent shadow-glow-sm" />
+                    <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-emerald-400 animate-pulse" />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <h4 className="text-sm font-black text-white">{t('scanner.scanningBtn') || 'Analyzing Leaf with YOLOv8...'}</h4>
+                    <p className="text-xs text-emerald-300">Extracting fungal, viral & pest pathogen features</p>
+                  </div>
+
+                  {/* Upload Progress Bar */}
+                  {uploadProgress > 0 && (
+                    <div className="w-full max-w-xs h-2 rounded-full bg-slate-800 overflow-hidden border border-slate-700">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-300 transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Preview Action Buttons */}
+            <div className="flex items-center justify-center gap-3">
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleTriggerScan}
+                disabled={isScanning}
+                loading={isScanning}
+                icon={Sparkles}
+                className="w-full sm:w-auto"
+              >
+                {t('scanner.scanNow') || 'Run AI Diagnosis'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="md"
+                onClick={clearSelection}
+                disabled={isScanning}
+                icon={RefreshCw}
+              >
+                Retake Photo
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4 max-w-md">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-glow-sm">
+              <UploadCloud className="h-8 w-8" />
+            </div>
+
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                {t('scanner.dragDrop') || 'Drag & Drop Plant Leaf Photo'}
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Supports JPG, PNG or WebP (auto-compressed on device before transmission)
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => cameraInputRef.current?.click()}
+                icon={Camera}
+              >
+                Take Camera Photo
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() => fileInputRef.current?.click()}
+                icon={ImageIcon}
+              >
+                Browse Gallery
+              </Button>
+
+              {onGrabEsp32Frame && (
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={onGrabEsp32Frame}
+                  icon={Layers}
+                >
+                  {t('scanner.captureEsp32') || 'Grab from ESP32-CAM'}
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Dropzone Area */}
-        <div
-          onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
-          onDragLeave={() => setIsDragOver(false)}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className={`relative flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 text-center transition-all ${
-            isDragOver
-              ? 'border-emerald-400 bg-emerald-500/10 scale-[0.99]'
-              : previewUrl
-              ? 'border-emerald-500/40 bg-slate-900/60'
-              : 'border-slate-700 bg-slate-900/40 hover:border-slate-600 hover:bg-slate-900/60'
-          }`}
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
-            accept="image/*"
-            className="hidden"
-          />
-
-          {previewUrl ? (
-            <div className="relative group w-full max-w-xs overflow-hidden rounded-lg border border-slate-700">
-              <img src={previewUrl} alt="Crop Preview" className="h-44 w-full object-cover rounded-lg" />
-              <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
-                  <RefreshCw className="h-4 w-4" /> Change Image
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20">
-                <Upload className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-200">{t('scanner.dragDrop')}</p>
-                <p className="text-xs text-slate-500 mt-1">Supports JPG, PNG, WEBP up to 10MB</p>
-              </div>
-            </div>
-          )}
+      {/* 1-Click Sample Leaf Cards */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+          <span>Or test instantly with verified sample diseased leaves:</span>
         </div>
 
-        {/* Action Controls & ESP32 Camera Grabber */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleCaptureEsp32}
-              className="flex items-center gap-2 rounded-xl bg-slate-800 border border-slate-700 px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-slate-700 hover:border-emerald-500/40 transition-all"
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {SAMPLE_LEAF_IMAGES.map((sample, idx) => (
+            <div
+              key={idx}
+              onClick={() => handleSampleSelect(sample)}
+              className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/80 p-3 hover:border-emerald-500/50 hover:bg-slate-850/80 transition-all cursor-pointer shadow-sm group"
             >
-              <Camera className="h-4 w-4" />
-              <span>{t('scanner.captureEsp32')}</span>
-            </button>
-
-            <span className="hidden sm:flex items-center gap-1 text-[11px] text-slate-400 bg-slate-900 border border-slate-800 px-2.5 py-1.5 rounded-lg">
-              <MapPin className="h-3 w-3 text-emerald-400" />
-              <span>GPS: 16.5062, 80.6480</span>
-            </span>
-          </div>
-
-          <button
-            type="submit"
-            disabled={!selectedFile || isScanning}
-            className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-extrabold transition-all shadow-lg ${
-              !selectedFile || isScanning
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-emerald-600 to-green-500 text-white hover:from-emerald-500 hover:to-green-400 shadow-emerald-500/20 ring-2 ring-emerald-400/40'
-            }`}
-          >
-            {isScanning ? (
-              <>
-                <RefreshCw className="h-4 w-4 animate-spin text-white" />
-                <span>{t('scanner.scanningBtn')}</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                <span>{t('scanner.scanNow')}</span>
-              </>
-            )}
-          </button>
+              <img
+                src={sample.url}
+                alt={sample.name}
+                className="h-12 w-12 rounded-xl object-cover border border-slate-700 group-hover:scale-105 transition-transform"
+              />
+              <div className="space-y-0.5">
+                <div className="text-xs font-black text-white line-clamp-1">{sample.name}</div>
+                <div className="text-[10px] text-emerald-400 font-bold uppercase">{sample.crop}</div>
+              </div>
+            </div>
+          ))}
         </div>
-      </form>
+      </div>
     </div>
   );
 }

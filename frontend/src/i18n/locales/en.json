@@ -1,9 +1,10 @@
 {
   "nav": {
-    "dashboard": "Robot Dashboard",
+    "dashboard": "Rover Dashboard",
     "scan": "Plant Disease Scanner",
     "history": "Scan History",
     "analytics": "Field Analytics",
+    "settings": "Settings",
     "login": "Login",
     "logout": "Logout"
   },

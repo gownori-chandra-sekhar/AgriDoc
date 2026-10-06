@@ -1,20 +1,52 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Bot, ScanLine, History, BarChart3 } from 'lucide-react';
+import { useAuth, ROLES } from '../../context/AuthContext';
+import {
+  Bot,
+  ScanLine,
+  History,
+  BarChart3,
+  Cpu,
+  Settings as SettingsIcon
+} from 'lucide-react';
 
 export default function MobileNav() {
   const { t } = useTranslation();
+  const { role } = useAuth();
 
-  const navItems = [
-    { to: '/', label: t('nav.dashboard'), icon: Bot },
-    { to: '/scan', label: t('nav.scan'), icon: ScanLine },
-    { to: '/history', label: t('nav.history'), icon: History },
-    { to: '/analytics', label: t('nav.analytics'), icon: BarChart3 },
-  ];
+  const getNavItems = () => {
+    switch (role) {
+      case ROLES.OPERATOR:
+        return [
+          { to: '/', label: 'Rover', icon: Bot },
+          { to: '/hardware-scan', label: 'ESP32', icon: Cpu },
+          { to: '/scan', label: 'Scanner', icon: ScanLine },
+          { to: '/history', label: 'Logs', icon: History },
+          { to: '/settings', label: 'Settings', icon: SettingsIcon },
+        ];
+      case ROLES.ADMIN:
+        return [
+          { to: '/', label: 'Overview', icon: Bot },
+          { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+          { to: '/history', label: 'Reports', icon: History },
+          { to: '/hardware-scan', label: 'Hardware', icon: Cpu },
+          { to: '/settings', label: 'Settings', icon: SettingsIcon },
+        ];
+      default: // FARMER
+        return [
+          { to: '/', label: 'Dashboard', icon: Bot },
+          { to: '/scan', label: 'Scan Leaf', icon: ScanLine },
+          { to: '/history', label: 'History', icon: History },
+          { to: '/settings', label: 'Settings', icon: SettingsIcon },
+        ];
+    }
+  };
+
+  const navItems = getNavItems();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex border-t border-slate-800 bg-slate-900/95 backdrop-blur-lg px-2 py-2 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around glass-panel border-t border-slate-800/90 py-2 px-2 shadow-2xl safe-area-bottom">
       {navItems.map((item) => {
         const Icon = item.icon;
         return (
@@ -22,13 +54,15 @@ export default function MobileNav() {
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
-              `flex flex-1 flex-col items-center justify-center py-1.5 text-[11px] font-medium transition-colors ${
-                isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center justify-center min-w-[48px] min-h-[48px] rounded-2xl px-2 py-1 transition-all ${
+                isActive
+                  ? 'text-emerald-400 bg-emerald-500/15 font-black border border-emerald-500/30'
+                  : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <Icon className="h-5 w-5 mb-0.5" />
-            <span>{item.label}</span>
+            <Icon className="h-5 w-5" />
+            <span className="text-[10px] mt-0.5">{item.label}</span>
           </NavLink>
         );
       })}

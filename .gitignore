@@ -33,6 +33,12 @@ __pycache__/
 *.swp
 *.swo
 
+# Uploads & temporary test media
+backend/app/uploads/*
+!backend/app/uploads/.gitkeep
+!backend/app/uploads/audio/.gitkeep
+!backend/app/uploads/images/.gitkeep
+
 # OS files
 .DS_Store
 Thumbs.db

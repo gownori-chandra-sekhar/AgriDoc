@@ -1,157 +1,242 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sprout, Phone, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
-import { supabase } from '../services/supabaseClient';
+import { useAuth, ROLES } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import {
+  Sprout,
+  Phone,
+  Lock,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  Sparkles,
+  Bot,
+  UserCheck
+} from 'lucide-react';
+import Card from '../components/common/Card';
+import Button from '../components/common/Button';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 export default function Login({ onLoginSuccess }) {
   const { t } = useTranslation();
-  const [phone, setPhone] = useState('');
+  const { login } = useAuth();
+  const toast = useToast();
+
+  const [phone, setPhone] = useState('+91 98765 43210');
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState('phone'); // 'phone' | 'otp'
+  const [selectedRole, setSelectedRole] = useState(ROLES.FARMER);
+  const [step, setStep] = useState('phone'); // 'phone' or 'otp'
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
 
-  const handleSendOtp = async (e) => {
+  const handleSendOtp = (e) => {
     e.preventDefault();
-    if (!phone) return;
-    setLoading(true);
-    setMessage('');
-    try {
-      const { error } = await supabase.auth.signInWithOtp({ phone });
-      if (error) throw error;
-      setStep('otp');
-      setMessage('OTP sent to your phone number via SMS.');
-    } catch (err) {
-      // Fallback demo support if Supabase keys not set
-      setStep('otp');
-      setMessage('Demo mode: Enter any 6-digit OTP (e.g. 123456)');
-    } finally {
-      setLoading(false);
+    if (!phone || phone.length < 10) {
+      toast.error('Please enter a valid 10-digit mobile phone number.');
+      return;
     }
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep('otp');
+      toast.info(`Verification code sent to ${phone}. (Use test code: 123456)`, 'OTP Sent');
+    }, 600);
   };
 
-  const handleVerifyOtp = async (e) => {
+  const handleVerifyOtp = (e) => {
     e.preventDefault();
+    if (!otp || otp.length < 4) {
+      toast.error('Please enter the verification code.');
+      return;
+    }
     setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
+    setTimeout(() => {
+      setLoading(false);
+      const userObj = {
+        id: `user_${phone.replace(/\D/g, '')}`,
+        name: selectedRole === ROLES.FARMER ? 'Farmer Ramesh' : selectedRole === ROLES.OPERATOR ? 'Rover Operator' : 'Chief Agronomist',
         phone,
-        token: otp,
-        type: 'sms',
-      });
-      if (error) throw error;
-      onLoginSuccess(data.user);
-    } catch (err) {
-      // Fallback demo user
-      onLoginSuccess({ id: 'demo_farmer_123', phone: phone || '+91 98765 43210' });
-    } finally {
-      setLoading(false);
-    }
+        role: selectedRole,
+        farmLocation: 'Guntur, Andhra Pradesh',
+      };
+      login(userObj);
+      toast.success(t('login.loginSuccess') || 'Logged in successfully!');
+      if (onLoginSuccess) onLoginSuccess(userObj);
+    }, 600);
   };
 
-  const handleDemoLogin = () => {
-    onLoginSuccess({ id: 'demo_farmer_123', phone: '+91 98765 43210' });
+  const handleQuickDemo = (roleChoice) => {
+    const roleMap = {
+      [ROLES.FARMER]: { name: 'Ramesh Patel (Farmer)', phone: '+91 98765 43210', role: ROLES.FARMER },
+      [ROLES.OPERATOR]: { name: 'Vikram Singh (Operator)', phone: '+91 98765 43211', role: ROLES.OPERATOR },
+      [ROLES.ADMIN]: { name: 'Dr. Ananya Rao (Agronomist)', phone: '+91 98765 43212', role: ROLES.ADMIN },
+    };
+    const userObj = roleMap[roleChoice] || roleMap[ROLES.FARMER];
+    login(userObj);
+    toast.success(`Logged in as ${userObj.name}`);
+    if (onLoginSuccess) onLoginSuccess(userObj);
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 p-4 relative overflow-hidden">
-      {/* Background Glow Overlay */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-slate-950 bg-agri-grid flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden">
+      {/* Aurora Ambient Glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="glass-panel relative w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/90 p-6 sm:p-8 shadow-2xl space-y-6">
-        {/* Header Branding */}
+      {/* Language Switcher Top Bar */}
+      <div className="absolute top-4 right-4 z-20">
+        <LanguageSwitcher />
+      </div>
+
+      <div className="w-full max-w-md relative z-10 space-y-6">
+        {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-400 shadow-xl shadow-emerald-500/30 ring-4 ring-emerald-400/20">
-            <Sprout className="h-9 w-9 text-white" />
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 text-white shadow-glow-md ring-4 ring-emerald-400/30">
+            <Sprout className="h-9 w-9" />
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight">
-            {t('login.title')}
+          <h1 className="text-3xl font-black tracking-tight text-white">
+            Agri<span className="text-emerald-400">Doc</span> Portal
           </h1>
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
-            {t('login.subtitle')}
+            {t('login.subtitle') || 'Sign in with your registered phone number or launch instant demo'}
           </p>
         </div>
 
-        {message && (
-          <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs text-emerald-400 text-center font-medium">
-            {message}
-          </div>
-        )}
+        {/* Login Card */}
+        <Card className="border-slate-800 bg-slate-900/90 shadow-2xl p-6 sm:p-8 space-y-5">
+          {/* Role Selection Tabs */}
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              Select Your Operational Role
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedRole(ROLES.FARMER)}
+                className={`py-2 px-1 rounded-xl text-xs font-black transition-all border ${
+                  selectedRole === ROLES.FARMER
+                    ? 'bg-emerald-500/20 border-emerald-400 text-white shadow-glow-sm'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                👨‍🌾 Farmer
+              </button>
 
-        {step === 'phone' ? (
-          <form onSubmit={handleSendOtp} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                {t('login.phoneLabel')}
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder={t('login.phonePlaceholder')}
-                  required
-                  className="w-full rounded-xl bg-slate-950 border border-slate-700 py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                />
+              <button
+                type="button"
+                onClick={() => setSelectedRole(ROLES.OPERATOR)}
+                className={`py-2 px-1 rounded-xl text-xs font-black transition-all border ${
+                  selectedRole === ROLES.OPERATOR
+                    ? 'bg-cyan-500/20 border-cyan-400 text-white shadow-glow-cyan'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                🤖 Operator
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedRole(ROLES.ADMIN)}
+                className={`py-2 px-1 rounded-xl text-xs font-black transition-all border ${
+                  selectedRole === ROLES.ADMIN
+                    ? 'bg-teal-500/20 border-teal-400 text-white shadow-glow-sm'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                🔬 Admin
+              </button>
+            </div>
+          </div>
+
+          {/* Form Content */}
+          {step === 'phone' ? (
+            <form onSubmit={handleSendOtp} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-300">
+                  {t('login.phoneLabel') || 'Mobile Phone Number'}
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400" />
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                    className="w-full rounded-2xl bg-slate-950 border border-slate-700/80 py-3.5 pl-10 pr-4 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                loading={loading}
+                icon={ArrowRight}
+                className="w-full"
+              >
+                {t('login.sendOtp') || 'Send Verification Code'}
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-300">
+                  {t('login.enterOtp') || 'Enter 6-Digit OTP Code'}
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-400" />
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    required
+                    className="w-full rounded-2xl bg-slate-950 border border-slate-700/80 py-3.5 pl-10 pr-4 text-center font-mono text-lg font-black tracking-widest text-white focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="md"
+                  onClick={() => setStep('phone')}
+                >
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  loading={loading}
+                  className="flex-1"
+                >
+                  {t('login.verifyOtp') || 'Verify & Login'}
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {/* Quick Demo Instant Access */}
+          <div className="pt-2 border-t border-slate-800/80 space-y-2.5">
+            <div className="text-[11px] text-center font-bold text-slate-400">
+              Or test immediately without verification:
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 py-3 text-sm font-extrabold text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-500 hover:to-green-400 transition-all"
-            >
-              <span>{t('login.sendOtp')}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                {t('login.enterOtp')}
-              </label>
-              <input
-                type="text"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="123456"
-                required
-                className="w-full rounded-xl bg-slate-950 border border-slate-700 py-2.5 px-4 text-center text-lg font-bold tracking-widest text-white focus:border-emerald-500 focus:outline-none"
-              />
+            <div className="grid grid-cols-1 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleQuickDemo(selectedRole)}
+                icon={Sparkles}
+                className="w-full"
+              >
+                Launch Demo as {selectedRole.toUpperCase()}
+              </Button>
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 py-3 text-sm font-extrabold text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-500 hover:to-green-400 transition-all"
-            >
-              <ShieldCheck className="h-4 w-4" />
-              <span>{t('login.verifyOtp')}</span>
-            </button>
-          </form>
-        )}
-
-        {/* Demo Fast Login Divider */}
-        <div className="relative pt-2">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-800" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-slate-900 px-2 text-slate-500 font-semibold">Or Instant Access</span>
-          </div>
-        </div>
-
-        <button
-          onClick={handleDemoLogin}
-          type="button"
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-800/80 border border-slate-700 py-2.5 text-xs font-bold text-emerald-400 hover:bg-slate-800 hover:border-emerald-500/40 transition-all"
-        >
-          <Sparkles className="h-4 w-4 text-emerald-400" />
-          <span>{t('login.demoLogin')}</span>
-        </button>
+        </Card>
       </div>
     </div>
   );

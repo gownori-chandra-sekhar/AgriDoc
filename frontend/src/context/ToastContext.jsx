@@ -1,0 +1,98 @@
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
+
+const ToastContext = createContext(null);
+
+export function ToastProvider({ children }) {
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = useCallback(({ title, message, type = 'info', duration = 4000, action }) => {
+    const id = Date.now() + Math.random();
+    setToasts((prev) => [...prev, { id, title, message, type, action }]);
+
+    if (duration > 0) {
+      setTimeout(() => {
+        removeToast(id);
+      }, duration);
+    }
+    return id;
+  }, []);
+
+  const removeToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const toast = {
+    success: (msg, title = 'Success') => addToast({ title, message: msg, type: 'success' }),
+    error: (msg, title = 'Error') => addToast({ title, message: msg, type: 'error', duration: 6000 }),
+    warning: (msg, title = 'Warning') => addToast({ title, message: msg, type: 'warning' }),
+    info: (msg, title = 'Info') => addToast({ title, message: msg, type: 'info' }),
+    custom: addToast,
+  };
+
+  return (
+    <ToastContext.Provider value={{ toast, addToast, removeToast }}>
+      {children}
+      {/* Toast Overlay Container */}
+      <div
+        aria-live="polite"
+        className="fixed bottom-20 md:bottom-6 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
+      >
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            role="status"
+            className={`pointer-events-auto flex items-start gap-3 rounded-2xl p-4 border shadow-2xl backdrop-blur-xl transition-all duration-300 animate-slide-up ${
+              t.type === 'success'
+                ? 'bg-slate-900/95 border-emerald-500/50 text-emerald-300 shadow-glow-sm'
+                : t.type === 'error'
+                ? 'bg-slate-900/95 border-rose-500/50 text-rose-300 shadow-glow-rose'
+                : t.type === 'warning'
+                ? 'bg-slate-900/95 border-amber-500/50 text-amber-300 shadow-lg'
+                : 'bg-slate-900/95 border-cyan-500/50 text-cyan-300 shadow-glow-cyan'
+            }`}
+          >
+            <div className="mt-0.5 shrink-0">
+              {t.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400" />}
+              {t.type === 'error' && <AlertCircle className="h-5 w-5 text-rose-400" />}
+              {t.type === 'warning' && <AlertTriangle className="h-5 w-5 text-amber-400" />}
+              {t.type === 'info' && <Info className="h-5 w-5 text-cyan-400" />}
+            </div>
+
+            <div className="flex-1 space-y-0.5">
+              {t.title && <h4 className="text-xs font-black text-white">{t.title}</h4>}
+              <p className="text-xs text-slate-300 leading-relaxed">{t.message}</p>
+              {t.action && (
+                <button
+                  onClick={() => {
+                    t.action.onClick();
+                    removeToast(t.id);
+                  }}
+                  className="mt-1.5 inline-block text-[11px] font-bold text-emerald-400 underline hover:text-emerald-300"
+                >
+                  {t.action.label}
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={() => removeToast(t.id)}
+              aria-label="Dismiss toast"
+              className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </ToastContext.Provider>
+  );
+}
+
+export function useToast() {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context.toast;
+}

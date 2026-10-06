@@ -1,65 +1,101 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useScan } from '../hooks/useScan';
 import ImageUploader from '../components/scanner/ImageUploader';
-import ResultCard from '../components/scanner/ResultCard';
-import { scanPlant } from '../services/api';
-import { ScanLine, CheckCircle2 } from 'lucide-react';
+import DiagnosisCard from '../components/scanner/DiagnosisCard';
+import { ScanLine, Sparkles, Info, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import Card from '../components/common/Card';
+import Badge from '../components/common/Badge';
 
 export default function ScanPlant() {
-  const { t, i18n } = useTranslation();
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanResult, setScanResult] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
+  const { t } = useTranslation();
+  const {
+    scan,
+    isScanning,
+    uploadProgress,
+    scanResult,
+    error,
+    isPlayingAudio,
+    playVoiceAdvice,
+    stopVoiceAdvice,
+  } = useScan();
 
-  const handleScanPlant = async (imageFile, gps) => {
-    setIsScanning(true);
-    setErrorMsg('');
-    try {
-      const activeLang = i18n.language || 'en';
-      const result = await scanPlant(imageFile, activeLang, gps);
-      setScanResult(result);
-
-      // Trigger browser push notification if supported
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(`🚨 AgriDoc Disease Alert: ${result.disease}`, {
-          body: `Urgency: ${result.urgency}. Tap to view full localized treatment plan.`,
-          icon: result.image_url,
-        });
-      } else if ('Notification' in window && Notification.permission !== 'denied') {
-        Notification.requestPermission();
-      }
-    } catch (err) {
-      console.error('Scan Error:', err);
-      setErrorMsg('Failed to process image scan. Please try again.');
-    } finally {
-      setIsScanning(false);
-    }
-  };
+  const detectedCrops = [
+    { name: 'Paddy / Rice', diseases: 'Blast, Brown Spot' },
+    { name: 'Tomato', diseases: 'Early Blight, Late Blight, Leaf Mold' },
+    { name: 'Wheat', diseases: 'Rust, Powdery Mildew' },
+    { name: 'Cotton', diseases: 'Bacterial Blight, Grey Mildew' },
+  ];
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Page Title */}
-      <div>
-        <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl flex items-center gap-2">
-          <ScanLine className="h-7 w-7 text-emerald-400" />
-          {t('nav.scan')}
-        </h1>
-        <p className="text-xs text-slate-400">
-          Upload leaf photo or grab live ESP32 camera frame for instant YOLOv8 disease prediction & voice advisory
-        </p>
+    <div className="space-y-6 pb-24 md:pb-12 max-w-5xl mx-auto overflow-x-hidden">
+      {/* Page Header Banner */}
+      <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-800/90 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white shadow-glow-sm">
+            <ScanLine className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white">
+              {t('scanner.title') || 'AI Crop Leaf Health Scanner'}
+            </h1>
+            <p className="text-xs text-slate-400">
+              {t('scanner.subtitle') || 'YOLOv8 computer vision diagnosis with localized voice guidance'}
+            </p>
+          </div>
+        </div>
+
+        <Badge variant="success" size="lg">
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>YOLOv8 ACTIVE</span>
+        </Badge>
       </div>
 
-      {errorMsg && (
-        <div className="rounded-xl bg-rose-500/10 border border-rose-500/30 p-3 text-xs text-rose-400 font-semibold">
-          {errorMsg}
+      {/* Supported Crop Models Badge Bar */}
+      <Card className="p-4 border-slate-800/90 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <Info className="h-3.5 w-3.5 text-emerald-400" />
+            Active Crop Detection Models
+          </span>
+          <span className="text-[11px] text-emerald-400 font-bold">10+ Pathogen Profiles</span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          {detectedCrops.map((c, i) => (
+            <div key={i} className="rounded-2xl border border-slate-800 bg-slate-950/70 p-2.5 space-y-0.5">
+              <div className="text-xs font-black text-white">{c.name}</div>
+              <div className="text-[10px] text-emerald-400/90 font-medium line-clamp-1">{c.diseases}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {error && (
+        <div className="rounded-2xl bg-rose-500/10 border border-rose-500/30 p-4 text-xs text-rose-300 font-semibold flex items-center gap-2 shadow-glow-rose">
+          <span className="h-2 w-2 rounded-full bg-rose-500 animate-ping" />
+          <span>{error}</span>
         </div>
       )}
 
-      {/* Image Uploader & ESP32 Grabber */}
-      <ImageUploader onScan={handleScanPlant} isScanning={isScanning} />
+      {/* Image Uploader */}
+      <ImageUploader
+        onScan={scan}
+        isScanning={isScanning}
+        uploadProgress={uploadProgress}
+      />
 
-      {/* Result Display Card */}
-      {scanResult && <ResultCard result={scanResult} />}
+      {/* Diagnosis Result Card */}
+      {scanResult && (
+        <div className="animate-scale-up">
+          <DiagnosisCard
+            result={scanResult}
+            isPlayingAudio={isPlayingAudio}
+            onPlayVoice={playVoiceAdvice}
+            onStopVoice={stopVoiceAdvice}
+          />
+        </div>
+      )}
     </div>
   );
 }

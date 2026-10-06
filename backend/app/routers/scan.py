@@ -34,7 +34,7 @@ async def scan_plant(
     Scans plant leaf image, predicts disease using YOLOv8, fetches translated remedy,
     generates TTS audio voice, saves to database, and triggers push notification.
     """
-    if not file.content_type.startswith("image/"):
+    if file.content_type and not (file.content_type.startswith("image/") or file.content_type == "application/octet-stream"):
         raise HTTPException(status_code=400, detail="Uploaded file must be an image.")
 
     image_bytes = await file.read()
