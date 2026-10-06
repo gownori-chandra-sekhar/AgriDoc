@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth, ROLES } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -19,7 +20,8 @@ import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 export default function Login({ onLoginSuccess }) {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const navigate = useNavigate();
+  const { user, login } = useAuth();
   const toast = useToast();
 
   const [phone, setPhone] = useState('+91 98765 43210');
@@ -39,7 +41,7 @@ export default function Login({ onLoginSuccess }) {
       setLoading(false);
       setStep('otp');
       toast.info(`Verification code sent to ${phone}. (Use test code: 123456)`, 'OTP Sent');
-    }, 600);
+    }, 400);
   };
 
   const handleVerifyOtp = (e) => {
@@ -61,7 +63,8 @@ export default function Login({ onLoginSuccess }) {
       login(userObj);
       toast.success(t('login.loginSuccess') || 'Logged in successfully!');
       if (onLoginSuccess) onLoginSuccess(userObj);
-    }, 600);
+      navigate('/');
+    }, 400);
   };
 
   const handleQuickDemo = (roleChoice) => {
@@ -74,6 +77,7 @@ export default function Login({ onLoginSuccess }) {
     login(userObj);
     toast.success(`Logged in as ${userObj.name}`);
     if (onLoginSuccess) onLoginSuccess(userObj);
+    navigate('/');
   };
 
   return (
