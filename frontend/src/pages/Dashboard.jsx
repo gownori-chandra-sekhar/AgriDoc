@@ -27,6 +27,8 @@ import DiseaseBarChart from '../components/analytics/DiseaseBarChart';
 import HealthPieChart from '../components/analytics/HealthPieChart';
 import Esp32WifiScannerModal from '../components/dashboard/Esp32WifiScannerModal';
 
+import FarmerLiveCamScanner from '../components/scanner/FarmerLiveCamScanner';
+
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ export default function Dashboard() {
 
   const [isScannerModalOpen, setIsScannerModalOpen] = useState(false);
   const [operatorViewMode, setOperatorViewMode] = useState('hud');
+  const [farmerScanMode, setFarmerScanMode] = useState('camera'); // 'camera' | 'upload'
 
   const handleGrabEsp32Frame = async () => {
     try {
@@ -88,7 +91,7 @@ export default function Dashboard() {
                 Namaste, <span className="text-emerald-600">{user?.name || 'Farmer'}</span>
               </h1>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-                Photograph your crop leaf for instantaneous YOLOv8 disease diagnosis and step-by-step voice guidance in your native language.
+                View real-time ESP32 camera stream, capture diseased leaf frames, and receive instant YOLOv8 AI verification with voice advice in your language.
               </p>
             </div>
 
@@ -117,30 +120,68 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Hero Scan Leaf Action */}
+        {/* Live ESP32-CAM & AI Pathogen Verification Section */}
         <div id="farmer-scan-section" className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <ScanLine className="h-5 w-5 text-emerald-600" />
               <h2 className="text-base sm:text-lg font-black text-slate-900">
-                Instant Leaf Disease Diagnosis
+                ESP32 Live Camera & AI Disease Verification
               </h2>
             </div>
-            <span className="text-xs text-emerald-700 font-bold hidden sm:inline">
-              10+ Major Crop Pathogen Models Active
-            </span>
+
+            {/* Scan Mode Switcher */}
+            <div className="flex items-center rounded-2xl bg-slate-100 p-1 border border-slate-200 self-start sm:self-auto">
+              <button
+                onClick={() => setFarmerScanMode('camera')}
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
+                  farmerScanMode === 'camera'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Bot className="h-3.5 w-3.5" />
+                <span>Live ESP32 Cam</span>
+              </button>
+
+              <button
+                onClick={() => setFarmerScanMode('upload')}
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
+                  farmerScanMode === 'upload'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <ScanLine className="h-3.5 w-3.5" />
+                <span>Upload Leaf File</span>
+              </button>
+            </div>
           </div>
 
-          <ImageUploader
-            onScan={scan}
-            isScanning={isScanning}
-            uploadProgress={uploadProgress}
-            onGrabEsp32Frame={handleGrabEsp32Frame}
-          />
+          {/* Active Scanner View: Live ESP32 Camera vs Photo Uploader */}
+          {farmerScanMode === 'camera' ? (
+            <FarmerLiveCamScanner
+              onScan={scan}
+              isScanning={isScanning}
+              scanResult={scanResult}
+              uploadProgress={uploadProgress}
+              isPlayingAudio={isPlayingAudio}
+              onPlayVoice={playVoiceAdvice}
+              onStopVoice={stopVoiceAdvice}
+              esp32StreamUrl="/api/rover/stream"
+            />
+          ) : (
+            <ImageUploader
+              onScan={scan}
+              isScanning={isScanning}
+              uploadProgress={uploadProgress}
+              onGrabEsp32Frame={handleGrabEsp32Frame}
+            />
+          )}
 
           {/* Diagnosis Result Card with Audio Guidance */}
           {scanResult && (
-            <div className="animate-scale-up">
+            <div className="animate-scale-up pt-2">
               <DiagnosisCard
                 result={scanResult}
                 isPlayingAudio={isPlayingAudio}

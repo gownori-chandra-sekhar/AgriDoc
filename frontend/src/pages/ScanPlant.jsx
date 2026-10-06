@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScan } from '../hooks/useScan';
 import ImageUploader from '../components/scanner/ImageUploader';
+import FarmerLiveCamScanner from '../components/scanner/FarmerLiveCamScanner';
 import DiagnosisCard from '../components/scanner/DiagnosisCard';
-import { ScanLine, Sparkles, Info } from 'lucide-react';
+import { ScanLine, Sparkles, Info, Bot } from 'lucide-react';
 import Card from '../components/common/Card';
 import Badge from '../components/common/Badge';
 
 export default function ScanPlant() {
   const { t } = useTranslation();
+  const [scanMode, setScanMode] = useState('camera'); // 'camera' | 'upload'
   const {
     scan,
     isScanning,
@@ -40,15 +42,37 @@ export default function ScanPlant() {
               {t('scanner.title') || 'AI Crop Leaf Health Scanner'}
             </h1>
             <p className="text-xs text-slate-500 font-medium">
-              {t('scanner.subtitle') || 'YOLOv8 computer vision diagnosis with localized voice guidance'}
+              Live ESP32 camera stream & instant YOLOv8 pathogen verification
             </p>
           </div>
         </div>
 
-        <Badge variant="success" size="lg">
-          <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
-          <span>YOLOv8 ACTIVE</span>
-        </Badge>
+        {/* Mode Switcher */}
+        <div className="flex items-center rounded-2xl bg-slate-100 p-1 border border-slate-200 self-start sm:self-auto">
+          <button
+            onClick={() => setScanMode('camera')}
+            className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
+              scanMode === 'camera'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Bot className="h-3.5 w-3.5" />
+            <span>Live ESP32 Cam</span>
+          </button>
+
+          <button
+            onClick={() => setScanMode('upload')}
+            className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
+              scanMode === 'upload'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <ScanLine className="h-3.5 w-3.5" />
+            <span>Upload Photo</span>
+          </button>
+        </div>
       </div>
 
       {/* Supported Crop Models */}
@@ -78,12 +102,25 @@ export default function ScanPlant() {
         </div>
       )}
 
-      {/* Image Uploader */}
-      <ImageUploader
-        onScan={scan}
-        isScanning={isScanning}
-        uploadProgress={uploadProgress}
-      />
+      {/* Main Scanner Section */}
+      {scanMode === 'camera' ? (
+        <FarmerLiveCamScanner
+          onScan={scan}
+          isScanning={isScanning}
+          scanResult={scanResult}
+          uploadProgress={uploadProgress}
+          isPlayingAudio={isPlayingAudio}
+          onPlayVoice={playVoiceAdvice}
+          onStopVoice={stopVoiceAdvice}
+          esp32StreamUrl="/api/rover/stream"
+        />
+      ) : (
+        <ImageUploader
+          onScan={scan}
+          isScanning={isScanning}
+          uploadProgress={uploadProgress}
+        />
+      )}
 
       {/* Diagnosis Result Card */}
       {scanResult && (
