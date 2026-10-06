@@ -18,15 +18,7 @@ export function AuthProvider({ children }) {
         console.error('Failed to parse saved user:', e);
       }
     }
-    // Default demo user if none saved
-    return {
-      id: 'demo_farmer_001',
-      name: 'Ramesh Patel',
-      phone: '+91 98765 43210',
-      role: ROLES.FARMER,
-      farmLocation: 'Guntur, Andhra Pradesh',
-      preferredLang: 'en',
-    };
+    return null;
   });
 
   useEffect(() => {
@@ -50,6 +42,20 @@ export function AuthProvider({ children }) {
     return enrichedUser;
   };
 
+  const loginWithDemo = (demoRole = ROLES.FARMER) => {
+    const demoUser = {
+      id: demoRole === ROLES.ADMIN ? 'demo_admin_001' : (demoRole === ROLES.OPERATOR ? 'demo_operator_001' : 'demo_farmer_001'),
+      name: demoRole === ROLES.ADMIN ? 'Dr. Sarah Rao' : (demoRole === ROLES.OPERATOR ? 'Alex Kumar' : 'Ramesh Patel'),
+      phone: '+91 98765 43210',
+      role: demoRole,
+      farmLocation: 'Guntur, Andhra Pradesh',
+      preferredLang: 'en',
+    };
+    setUser(demoUser);
+    localStorage.setItem('agridoc_user', JSON.stringify(demoUser));
+    return demoUser;
+  };
+
   const switchRole = (newRole) => {
     if (Object.values(ROLES).includes(newRole)) {
       setUser((prev) => (prev ? { ...prev, role: newRole } : null));
@@ -68,6 +74,7 @@ export function AuthProvider({ children }) {
         role: user?.role || ROLES.FARMER,
         isAuthenticated: Boolean(user),
         login,
+        loginWithDemo,
         logout,
         switchRole,
         ROLES,
