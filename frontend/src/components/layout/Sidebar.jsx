@@ -16,7 +16,7 @@ import {
 
 export default function Sidebar() {
   const { t } = useTranslation();
-  const { role } = useAuth();
+  const { role, sessionId } = useAuth();
 
   const getNavItems = () => {
     switch (role) {
@@ -49,6 +49,11 @@ export default function Sidebar() {
 
   const navItems = getNavItems();
 
+  const getTargetUrl = (path) => {
+    if (path === '/home') return '/home';
+    return sessionId ? `${path}${path.includes('?') ? '&' : '?'}session=${sessionId}` : path;
+  };
+
   return (
     <aside className="hidden md:flex w-64 flex-col glass-panel border-r border-slate-200/80 bg-white/95 p-4 min-h-[calc(100vh-65px)] shadow-sm">
       {/* Role Indicator Banner */}
@@ -66,10 +71,12 @@ export default function Sidebar() {
       <nav className="flex-1 space-y-1.5">
         {navItems.map((item) => {
           const Icon = item.icon;
+          const targetUrl = getTargetUrl(item.to);
           return (
             <NavLink
               key={item.to}
-              to={item.to}
+              to={targetUrl}
+              end={item.to === '/'}
               className={({ isActive }) =>
                 `group flex items-center justify-between rounded-2xl px-4 py-3 text-xs font-bold transition-all ${
                   isActive
@@ -95,7 +102,7 @@ export default function Sidebar() {
       {/* Footer Role Switcher Shortcut */}
       <div className="mt-auto pt-4 border-t border-slate-100">
         <NavLink
-          to="/settings"
+          to={getTargetUrl('/settings')}
           className="block rounded-2xl bg-slate-50 border border-slate-200 p-3 hover:bg-emerald-50 hover:border-emerald-300 transition-all group"
         >
           <div className="flex items-center justify-between text-xs font-bold text-slate-800">

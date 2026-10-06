@@ -94,10 +94,21 @@ export default function Header() {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Active Session Indicator */}
+            {user?.sessionId && (
+              <div
+                title={`Active Session: ${user.sessionId}`}
+                className="hidden xl:flex items-center gap-1.5 rounded-xl bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 text-[11px] font-mono font-bold text-emerald-800 shadow-sm"
+              >
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>{user.sessionId.length > 16 ? `${user.sessionId.slice(0, 16)}...` : user.sessionId}</span>
+              </div>
+            )}
+
             {/* Home Quick Link */}
             <button
               onClick={() => navigate('/home')}
-              className="hidden lg:flex items-center gap-1.5 rounded-xl bg-white border border-emerald-300 px-3 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-50 transition-all shadow-sm"
+              className="hidden lg:flex items-center gap-1.5 rounded-xl bg-white border border-emerald-300 px-3 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-50 transition-all shadow-sm cursor-pointer"
             >
               <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
               <span>Home Page</span>
@@ -110,7 +121,7 @@ export default function Header() {
             <button
               onClick={() => navigate('/settings')}
               title="Settings & Role Config"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50 transition-all shadow-sm"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50 transition-all shadow-sm cursor-pointer"
             >
               <SettingsIcon className="h-4 w-4" />
             </button>
@@ -118,9 +129,12 @@ export default function Header() {
             {/* User Profile & Logout */}
             {user && (
               <button
-                onClick={logout}
-                title="Logout"
-                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-500 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 transition-all shadow-sm"
+                onClick={() => {
+                  logout();
+                  navigate('/');
+                }}
+                title={`Logout (${user.name})`}
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-500 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 transition-all shadow-sm cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
               </button>

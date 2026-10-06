@@ -8,12 +8,22 @@ export const ROLES = {
   ADMIN: 'admin',
 };
 
+export function generateSessionId(role = 'user') {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).substring(2, 7);
+  return `sess_${role}_${random}${timestamp}`;
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('agridoc_user');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && !parsed.sessionId) {
+          parsed.sessionId = generateSessionId(parsed.role || 'farmer');
+        }
+        return parsed;
       } catch (e) {
         console.error('Failed to parse saved user:', e);
       }
@@ -30,11 +40,13 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   const login = (userData) => {
+    const role = userData.role || ROLES.FARMER;
     const enrichedUser = {
       id: userData.id || `user_${Date.now()}`,
+      sessionId: userData.sessionId || generateSessionId(role),
       name: userData.name || (userData.phone ? `Farmer (${userData.phone.slice(-4)})` : 'Demo User'),
       phone: userData.phone || '+91 98765 43210',
-      role: userData.role || ROLES.FARMER,
+      role: role,
       farmLocation: userData.farmLocation || 'Guntur, Andhra Pradesh',
       preferredLang: userData.preferredLang || 'en',
     };
@@ -45,6 +57,7 @@ export function AuthProvider({ children }) {
   const loginWithDemo = (demoRole = ROLES.FARMER) => {
     const demoUser = {
       id: demoRole === ROLES.ADMIN ? 'demo_admin_001' : (demoRole === ROLES.OPERATOR ? 'demo_operator_001' : 'demo_farmer_001'),
+      sessionId: generateSessionId(demoRole),
       name: demoRole === ROLES.ADMIN ? 'Dr. Sarah Rao' : (demoRole === ROLES.OPERATOR ? 'Alex Kumar' : 'Ramesh Patel'),
       phone: '+91 98765 43210',
       role: demoRole,
@@ -58,7 +71,7 @@ export function AuthProvider({ children }) {
 
   const switchRole = (newRole) => {
     if (Object.values(ROLES).includes(newRole)) {
-      setUser((prev) => (prev ? { ...prev, role: newRole } : null));
+      setUser((prev) => (prev ? { ...prev, role: newRole, sessionId: generateSessionId(newRole) } : null));
     }
   };
 
@@ -71,6 +84,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        sessionId: user?.sessionId || null,
         role: user?.role || ROLES.FARMER,
         isAuthenticated: Boolean(user),
         login,
@@ -92,3 +106,4 @@ export function useAuth() {
   }
   return context;
 }
+

@@ -13,7 +13,7 @@ import {
 
 export default function MobileNav() {
   const { t } = useTranslation();
-  const { role } = useAuth();
+  const { role, sessionId } = useAuth();
 
   const getNavItems = () => {
     switch (role) {
@@ -45,14 +45,20 @@ export default function MobileNav() {
 
   const navItems = getNavItems();
 
+  const getTargetUrl = (path) => {
+    return sessionId ? `${path}${path.includes('?') ? '&' : '?'}session=${sessionId}` : path;
+  };
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around glass-panel border-t border-slate-200/90 bg-white/95 py-2 px-2 shadow-xl safe-area-bottom">
       {navItems.map((item) => {
         const Icon = item.icon;
+        const targetUrl = getTargetUrl(item.to);
         return (
           <NavLink
             key={item.to}
-            to={item.to}
+            to={targetUrl}
+            end={item.to === '/'}
             className={({ isActive }) =>
               `flex flex-col items-center justify-center min-w-[48px] min-h-[48px] rounded-2xl px-2 py-1 transition-all ${
                 isActive

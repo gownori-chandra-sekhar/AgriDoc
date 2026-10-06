@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthProvider, useAuth, ROLES } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import Header from './components/layout/Header';
@@ -26,6 +26,47 @@ function PageLoader() {
       <CardSkeleton />
     </div>
   );
+}
+
+/**
+ * Syncs user.sessionId into the browser URL query parameter `?session=sess_...`
+ * so the active session is always visible and preserved in the web address bar.
+ */
+function SessionUrlSync() {
+  const { user, sessionId } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const currentSession = searchParams.get('session');
+
+    if (user && sessionId) {
+      if (currentSession !== sessionId) {
+        const newParams = new URLSearchParams(location.search);
+        newParams.set('session', sessionId);
+        navigate(
+          {
+            pathname: location.pathname,
+            search: newParams.toString(),
+          },
+          { replace: true }
+        );
+      }
+    } else if (!user && currentSession) {
+      const newParams = new URLSearchParams(location.search);
+      newParams.delete('session');
+      navigate(
+        {
+          pathname: location.pathname,
+          search: newParams.toString(),
+        },
+        { replace: true }
+      );
+    }
+  }, [user, sessionId, location.pathname, location.search, navigate, searchParams]);
+
+  return null;
 }
 
 function MainLayout() {
@@ -127,8 +168,9 @@ function AppRoutes() {
 
   return (
     <Suspense fallback={<PageLoader />}>
+      <SessionUrlSync />
       <Routes>
-        {/* If user is not logged in and lands on root '/', show the Home Page! */}
+        {/* If user is not logged in and lands on root '/', show the Home Web Page! */}
         <Route
           path="/"
           element={
@@ -155,3 +197,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+
