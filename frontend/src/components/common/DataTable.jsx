@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Download, Search, FileSpreadsheet } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Search, FileSpreadsheet } from 'lucide-react';
 import Button from './Button';
-import Badge from './Badge';
 
 export default function DataTable({
   columns = [],
@@ -17,10 +16,9 @@ export default function DataTable({
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState(null);
-  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
+  const [sortOrder, setSortOrder] = useState('asc');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Search Filter
   const filteredData = useMemo(() => {
     if (!searchQuery.trim()) return data;
     const query = searchQuery.toLowerCase();
@@ -31,7 +29,6 @@ export default function DataTable({
     );
   }, [data, searchQuery]);
 
-  // Sort
   const sortedData = useMemo(() => {
     if (!sortField) return filteredData;
     return [...filteredData].sort((a, b) => {
@@ -49,7 +46,6 @@ export default function DataTable({
     });
   }, [filteredData, sortField, sortOrder]);
 
-  // Pagination
   const totalPages = Math.ceil(sortedData.length / pageSize) || 1;
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -65,7 +61,6 @@ export default function DataTable({
     }
   };
 
-  // CSV Export
   const handleExportCSV = () => {
     if (!data.length) return;
     const headers = columns.map((c) => `"${c.header}"`).join(',');
@@ -102,7 +97,7 @@ export default function DataTable({
                 setCurrentPage(1);
               }}
               placeholder={searchPlaceholder}
-              className="w-full rounded-2xl bg-slate-900 border border-slate-700/80 py-2.5 pl-10 pr-4 text-xs font-semibold text-white placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-2xl bg-white border border-slate-200 py-2.5 pl-10 pr-4 text-xs font-semibold text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 shadow-sm"
             />
           </div>
         )}
@@ -120,23 +115,23 @@ export default function DataTable({
         )}
       </div>
 
-      {/* Responsive Table Container */}
-      <div className="overflow-x-auto rounded-3xl border border-slate-800 bg-slate-900/90 shadow-xl">
-        <table className="w-full text-left text-xs text-slate-200">
-          <thead className="border-b border-slate-800 bg-slate-950/70 text-[11px] font-black uppercase tracking-wider text-slate-400">
+      {/* Light Table Container */}
+      <div className="overflow-x-auto rounded-3xl border border-[#e2ece4] bg-white shadow-canva-card">
+        <table className="w-full text-left text-xs text-slate-800">
+          <thead className="border-b border-slate-100 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
             <tr>
               {columns.map((col) => (
                 <th
                   key={col.field || col.header}
                   onClick={() => col.sortable !== false && col.field && handleSort(col.field)}
                   className={`px-4 py-3.5 ${
-                    col.sortable !== false && col.field ? 'cursor-pointer select-none hover:text-white' : ''
+                    col.sortable !== false && col.field ? 'cursor-pointer select-none hover:text-emerald-700' : ''
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
                     <span>{col.header}</span>
                     {sortField === col.field && (
-                      sortOrder === 'asc' ? <ChevronUp className="h-3.5 w-3.5 text-emerald-400" /> : <ChevronDown className="h-3.5 w-3.5 text-emerald-400" />
+                      sortOrder === 'asc' ? <ChevronUp className="h-3.5 w-3.5 text-emerald-600" /> : <ChevronDown className="h-3.5 w-3.5 text-emerald-600" />
                     )}
                   </div>
                 </th>
@@ -144,14 +139,14 @@ export default function DataTable({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-slate-800/60">
+          <tbody className="divide-y divide-slate-100">
             {paginatedData.length > 0 ? (
               paginatedData.map((row) => (
                 <tr
                   key={row[keyField] || Math.random()}
                   onClick={() => onRowClick && onRowClick(row)}
                   className={`transition-colors ${
-                    onRowClick ? 'cursor-pointer hover:bg-slate-800/60' : 'hover:bg-slate-850/40'
+                    onRowClick ? 'cursor-pointer hover:bg-emerald-50/60' : 'hover:bg-slate-50'
                   }`}
                 >
                   {columns.map((col) => (
@@ -174,7 +169,7 @@ export default function DataTable({
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-2 text-xs text-slate-400">
+        <div className="flex items-center justify-between px-2 text-xs text-slate-500 font-semibold">
           <div>
             Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, sortedData.length)} of {sortedData.length} entries
           </div>
@@ -183,17 +178,17 @@ export default function DataTable({
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-300 disabled:opacity-40"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <span className="font-mono font-bold text-white">
+            <span className="font-mono font-bold text-slate-900">
               {currentPage} / {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-300 disabled:opacity-40"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40"
             >
               <ChevronRight className="h-4 w-4" />
             </button>

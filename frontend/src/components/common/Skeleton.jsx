@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function Skeleton({ className = '', variant = 'text' }) {
-  const base = 'animate-pulse bg-slate-800/80 rounded-xl';
+  const base = 'animate-pulse bg-slate-200/80 rounded-xl';
 
   const variants = {
     text: 'h-4 w-full',
@@ -17,7 +17,7 @@ export function Skeleton({ className = '', variant = 'text' }) {
 
 export function CardSkeleton() {
   return (
-    <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-4 animate-pulse">
+    <div className="glass-card rounded-3xl p-6 border border-slate-200 bg-white space-y-4 animate-pulse">
       <div className="flex items-center justify-between">
         <Skeleton variant="avatar" className="h-10 w-10" />
         <Skeleton className="h-4 w-20" />
@@ -36,7 +36,7 @@ export function CardSkeleton() {
 export function TableSkeleton({ rows = 5 }) {
   return (
     <div className="space-y-3">
-      <Skeleton className="h-10 w-full rounded-xl bg-slate-900" />
+      <Skeleton className="h-10 w-full rounded-xl bg-slate-100" />
       {Array.from({ length: rows }).map((_, i) => (
         <Skeleton key={i} className="h-14 w-full rounded-xl" />
       ))}

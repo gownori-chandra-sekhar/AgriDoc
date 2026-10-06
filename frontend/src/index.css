@@ -4,82 +4,72 @@
 
 @layer base {
   body {
-    @apply bg-canva-dark text-slate-100 antialiased selection:bg-canva-emerald selection:text-slate-950;
+    @apply bg-[#f4f9f5] text-slate-800 antialiased selection:bg-emerald-500 selection:text-white;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight font-sans;
+    @apply tracking-tight font-sans text-slate-900;
   }
 }
 
-/* Canva Luxury Botanical Aurora Background Mesh */
+/* Canva Clean Light Botanical Background */
 .bg-agri-grid {
-  background-color: #031710;
+  background-color: #f4f9f5;
   background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 229, 117, 0.22), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 85% 60%, rgba(245, 158, 11, 0.12), transparent 60%),
-    radial-gradient(ellipse 50% 30% at 15% 70%, rgba(6, 182, 212, 0.12), transparent 60%),
-    linear-gradient(to right, rgba(16, 185, 129, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.12), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 70%, rgba(245, 158, 11, 0.08), transparent 60%),
+    radial-gradient(ellipse 50% 30% at 10% 80%, rgba(6, 182, 212, 0.08), transparent 60%),
+    linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px, 32px 32px;
 }
 
-/* Canva High-End Glassmorphic Panels */
+/* Canva Light Glassmorphic Panels */
 .glass-panel {
-  background: linear-gradient(135deg, rgba(8, 38, 28, 0.85) 0%, rgba(3, 23, 16, 0.95) 100%);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(52, 211, 153, 0.25);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 236, 228, 0.9);
+  box-shadow: 0 10px 30px -5px rgba(5, 150, 105, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(10, 48, 36, 0.75) 0%, rgba(5, 28, 20, 0.85) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(52, 211, 153, 0.2);
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #ffffff;
+  border: 1px solid #e2ece4;
+  box-shadow: 0 4px 20px -2px rgba(5, 150, 105, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(0, 229, 117, 0.5);
-  box-shadow: 0 20px 45px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 229, 117, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: #10b981;
+  box-shadow: 0 16px 32px -6px rgba(5, 150, 105, 0.12), 0 6px 12px -2px rgba(0, 0, 0, 0.04);
 }
 
-/* Luminous Glowing Text Utilities */
+/* Glowing text utilities in light mode */
 .text-glow-emerald {
-  text-shadow: 0 0 20px rgba(0, 229, 117, 0.6), 0 0 40px rgba(0, 229, 117, 0.3);
+  text-shadow: 0 2px 10px rgba(5, 150, 105, 0.2);
 }
 
 .text-glow-gold {
-  text-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.3);
+  text-shadow: 0 2px 10px rgba(217, 119, 6, 0.2);
 }
 
-.text-glow-cyan {
-  text-shadow: 0 0 20px rgba(6, 182, 212, 0.6), 0 0 40px rgba(6, 182, 212, 0.3);
-}
-
-.text-glow-rose {
-  text-shadow: 0 0 20px rgba(244, 63, 94, 0.6), 0 0 40px rgba(244, 63, 94, 0.3);
-}
-
-/* Custom Sleek Scrollbar */
+/* Custom Sleek Light Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #031710;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #15523f;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00e575;
+  background: #10b981;
 }

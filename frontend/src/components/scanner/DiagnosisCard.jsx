@@ -3,15 +3,11 @@ import { useTranslation } from 'react-i18next';
 import {
   Volume2,
   VolumeX,
-  ShieldCheck,
-  AlertTriangle,
   MapPin,
   Sparkles,
   Leaf,
   FlaskConical,
   CheckCircle2,
-  Share2,
-  Download
 } from 'lucide-react';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
@@ -51,22 +47,22 @@ export default function DiagnosisCard({
   };
 
   return (
-    <Card className="border-emerald-500/30 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 shadow-2xl space-y-6">
+    <Card className="border-emerald-200 bg-white shadow-canva-card space-y-6">
       {/* Top Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-glow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 border border-emerald-300">
             <Sparkles className="h-6 w-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-widest text-emerald-400 font-mono">
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-700 font-mono">
                 {crop} DIAGNOSIS
               </span>
-              <span className="text-slate-500">•</span>
-              <span className="text-xs font-mono font-bold text-cyan-400">{confidence}% CONFIDENCE</span>
+              <span className="text-slate-300">•</span>
+              <span className="text-xs font-mono font-bold text-sky-700">{confidence}% CONFIDENCE</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white">{disease}</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900">{disease}</h2>
           </div>
         </div>
 
@@ -85,53 +81,50 @@ export default function DiagnosisCard({
 
       {/* Main Diagnosis Content Layout */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Image with YOLO Detection Boxes */}
         {imageUrl && (
           <div className="md:col-span-5 space-y-2">
-            <div className="relative aspect-video sm:aspect-square w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-xl group">
+            <div className="relative aspect-video sm:aspect-square w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-sm group">
               <img
                 src={imageUrl}
                 alt={disease}
                 className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute top-3 left-3 bg-slate-950/80 border border-emerald-500/40 rounded-xl px-2.5 py-1 text-[11px] font-mono text-emerald-300 backdrop-blur-md">
+              <div className="absolute top-3 left-3 bg-white/90 border border-emerald-300 rounded-xl px-2.5 py-1 text-[11px] font-mono font-bold text-emerald-800 backdrop-blur-md">
                 YOLOv8 Analyzed
               </div>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-              <MapPin className="h-3.5 w-3.5 text-emerald-400" />
-              <span>GPS Tag: <strong className="text-slate-200 font-mono">{gps}</strong></span>
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium">
+              <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+              <span>GPS Tag: <strong className="text-slate-800 font-mono">{gps}</strong></span>
             </div>
           </div>
         )}
 
-        {/* Right Column: Treatment & Action Plans */}
+        {/* Right Column: Treatment Plans */}
         <div className={`${imageUrl ? 'md:col-span-7' : 'md:col-span-12'} space-y-4`}>
-          {/* Main Action Plan */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4 space-y-1.5">
-            <h4 className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4" />
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 space-y-1.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
               Recommended Field Remedy
             </h4>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">{solution}</p>
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">{solution}</p>
           </div>
 
-          {/* Organic vs Chemical Treatment Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/10 p-3.5 space-y-1">
-              <span className="text-[11px] font-black uppercase text-emerald-300 flex items-center gap-1">
-                <Leaf className="h-3.5 w-3.5 text-emerald-400" />
+            <div className="rounded-2xl border border-emerald-200 bg-white p-3.5 space-y-1 shadow-sm">
+              <span className="text-[11px] font-bold uppercase text-emerald-800 flex items-center gap-1">
+                <Leaf className="h-3.5 w-3.5 text-emerald-600" />
                 Organic Remedy
               </span>
-              <p className="text-xs text-slate-300 leading-relaxed">{organicAdvice}</p>
+              <p className="text-xs text-slate-600 leading-relaxed">{organicAdvice}</p>
             </div>
 
-            <div className="rounded-2xl border border-cyan-500/20 bg-cyan-950/10 p-3.5 space-y-1">
-              <span className="text-[11px] font-black uppercase text-cyan-300 flex items-center gap-1">
-                <FlaskConical className="h-3.5 w-3.5 text-cyan-400" />
+            <div className="rounded-2xl border border-sky-200 bg-white p-3.5 space-y-1 shadow-sm">
+              <span className="text-[11px] font-bold uppercase text-sky-800 flex items-center gap-1">
+                <FlaskConical className="h-3.5 w-3.5 text-sky-600" />
                 Chemical Control
               </span>
-              <p className="text-xs text-slate-300 leading-relaxed">{chemicalAdvice}</p>
+              <p className="text-xs text-slate-600 leading-relaxed">{chemicalAdvice}</p>
             </div>
           </div>
         </div>

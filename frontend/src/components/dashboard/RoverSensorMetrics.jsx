@@ -36,20 +36,20 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
     return defaultPin;
   };
 
-  // Custom Dark Mode Recharts Tooltip
+  // Custom Canva Light Mode Recharts Tooltip
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-xl border border-slate-700 bg-slate-900/95 p-3 text-xs shadow-xl backdrop-blur-md">
-          <p className="font-mono text-slate-400 font-bold mb-1">{label}</p>
+        <div className="rounded-xl border border-slate-200 bg-white/95 p-3 text-xs shadow-xl backdrop-blur-md">
+          <p className="font-mono text-slate-600 font-bold mb-1">{label}</p>
           <div className="space-y-1 font-semibold">
-            <p className="text-amber-400 flex items-center justify-between gap-3">
+            <p className="text-amber-700 flex items-center justify-between gap-3">
               <span>Air Temp:</span> <span>{payload[0]?.value}°C</span>
             </p>
-            <p className="text-cyan-400 flex items-center justify-between gap-3">
+            <p className="text-cyan-700 flex items-center justify-between gap-3">
               <span>Humidity:</span> <span>{payload[1]?.value}%</span>
             </p>
-            <p className="text-emerald-400 flex items-center justify-between gap-3">
+            <p className="text-emerald-700 flex items-center justify-between gap-3">
               <span>Soil Moisture:</span> <span>{payload[2]?.value}%</span>
             </p>
           </div>
@@ -64,15 +64,15 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
       {/* Live Sync Status Banner */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <Cpu className="h-4 w-4 text-emerald-400" />
-          <h3 className="text-xs font-black uppercase tracking-wider text-slate-300">
+          <Cpu className="h-4 w-4 text-emerald-600" />
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-700">
             Live Synchronized ESP32 Sensor Grid
           </h3>
         </div>
         <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
           isConnected
-            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-            : 'bg-slate-800 text-slate-500 border-slate-700'
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+            : 'bg-slate-100 text-slate-600 border-slate-200'
         }`}>
           {isConnected ? (isLive ? '● Live Hardware Stream' : '● Node Synced') : '● Sensors Offline'}
         </span>
@@ -81,40 +81,40 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
       {/* Real-time Sensor Metric Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {/* Air Temperature Card */}
-        <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-amber-500/30 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Air Temp</span>
-            <Thermometer className="h-4 w-4 text-amber-400" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:border-amber-400/60 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-slate-600">
+            <span className="text-xs font-bold">Air Temp</span>
+            <Thermometer className="h-4 w-4 text-amber-600" />
           </div>
 
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-white">{isConnected && airTemp != null ? airTemp : '--'}</span>
-            <span className="text-xs text-amber-400 font-bold">°C</span>
+            <span className="text-2xl font-black text-slate-900">{isConnected && airTemp != null ? airTemp : '--'}</span>
+            <span className="text-xs text-amber-600 font-bold">°C</span>
           </div>
 
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-slate-400 font-medium">
+            <span className="text-slate-500 font-medium">
               {isConnected && airTemp != null ? (airTemp > 35 ? 'High Temp' : 'Optimal Field') : 'Offline'}
             </span>
-            <span className="rounded bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-amber-300">
+            <span className="rounded bg-amber-50 border border-amber-200 px-1.5 py-0.2 font-mono text-[9px] font-bold text-amber-800">
               {getPinLabel('air_temp_c', 'GPIO 4')}
             </span>
           </div>
         </div>
 
         {/* Air Humidity Card */}
-        <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-cyan-500/30 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Air Humidity</span>
-            <Droplets className="h-4 w-4 text-cyan-400" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:border-cyan-400/60 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-slate-600">
+            <span className="text-xs font-bold">Air Humidity</span>
+            <Droplets className="h-4 w-4 text-cyan-600" />
           </div>
 
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-white">{isConnected && humidity != null ? humidity : '--'}</span>
-            <span className="text-xs text-cyan-400 font-bold">%</span>
+            <span className="text-2xl font-black text-slate-900">{isConnected && humidity != null ? humidity : '--'}</span>
+            <span className="text-xs text-cyan-600 font-bold">%</span>
           </div>
 
-          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
             <div
               className="h-full bg-cyan-500 transition-all duration-500"
               style={{ width: `${isConnected && humidity != null ? humidity : 0}%` }}
@@ -122,28 +122,28 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
           </div>
 
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-slate-400 font-medium">
+            <span className="text-slate-500 font-medium">
               {isConnected && humidity != null ? `${humidity}% RH` : 'Offline'}
             </span>
-            <span className="rounded bg-cyan-500/10 border border-cyan-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-cyan-300">
+            <span className="rounded bg-cyan-50 border border-cyan-200 px-1.5 py-0.2 font-mono text-[9px] font-bold text-cyan-800">
               {getPinLabel('humidity_pct', 'GPIO 4')}
             </span>
           </div>
         </div>
 
         {/* Soil Moisture Card */}
-        <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-emerald-500/30 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Soil Moisture</span>
-            <Sprout className="h-4 w-4 text-emerald-400" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:border-emerald-400/60 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-slate-600">
+            <span className="text-xs font-bold">Soil Moisture</span>
+            <Sprout className="h-4 w-4 text-emerald-600" />
           </div>
 
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-white">{isConnected && soilMoisture != null ? soilMoisture : '--'}</span>
-            <span className="text-xs text-emerald-400 font-bold">%</span>
+            <span className="text-2xl font-black text-slate-900">{isConnected && soilMoisture != null ? soilMoisture : '--'}</span>
+            <span className="text-xs text-emerald-600 font-bold">%</span>
           </div>
 
-          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
             <div
               className="h-full bg-emerald-500 transition-all duration-500"
               style={{ width: `${isConnected && soilMoisture != null ? soilMoisture : 0}%` }}
@@ -151,50 +151,50 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
           </div>
 
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-emerald-400 font-semibold">
+            <span className="text-emerald-700 font-semibold">
               {isConnected && soilMoisture != null ? (soilMoisture < 30 ? 'Dry - Water' : 'Optimal') : 'Offline'}
             </span>
-            <span className="rounded bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-emerald-300">
+            <span className="rounded bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 font-mono text-[9px] font-bold text-emerald-800">
               {getPinLabel('soil_moisture_pct', 'GPIO 34')}
             </span>
           </div>
         </div>
 
         {/* Ambient Light Card */}
-        <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-yellow-500/30 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Ambient Light</span>
-            <Sun className="h-4 w-4 text-yellow-400" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:border-amber-400/60 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-slate-600">
+            <span className="text-xs font-bold">Ambient Light</span>
+            <Sun className="h-4 w-4 text-amber-500" />
           </div>
 
           <div className="flex items-baseline gap-1">
-            <span className="text-xl font-black text-white">{isConnected && lightLux != null ? lightLux.toLocaleString() : '--'}</span>
-            <span className="text-[10px] text-yellow-400 font-bold">Lux</span>
+            <span className="text-xl font-black text-slate-900">{isConnected && lightLux != null ? lightLux.toLocaleString() : '--'}</span>
+            <span className="text-[10px] text-amber-600 font-bold">Lux</span>
           </div>
 
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-slate-400 font-medium">
+            <span className="text-slate-500 font-medium">
               {isConnected && lightLux != null ? (lightLux > 10000 ? 'Full Daylight' : 'Low Light') : 'Offline'}
             </span>
-            <span className="rounded bg-yellow-500/10 border border-yellow-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-yellow-300">
+            <span className="rounded bg-amber-50 border border-amber-200 px-1.5 py-0.2 font-mono text-[9px] font-bold text-amber-800">
               {getPinLabel('light_lux', 'GPIO 35')}
             </span>
           </div>
         </div>
 
         {/* Battery Power & Voltage */}
-        <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-emerald-500/30 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">ESP32 Power</span>
-            <BatteryCharging className="h-4 w-4 text-emerald-400" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:border-emerald-400/60 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-slate-600">
+            <span className="text-xs font-bold">ESP32 Power</span>
+            <BatteryCharging className="h-4 w-4 text-emerald-600" />
           </div>
 
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-black text-white">{isConnected && batteryPct != null ? `${batteryPct}%` : '--'}</span>
-            <span className="text-[11px] font-mono text-emerald-400 font-bold">{isConnected && batteryVoltage != null ? `${batteryVoltage}V` : '--'}</span>
+            <span className="text-2xl font-black text-slate-900">{isConnected && batteryPct != null ? `${batteryPct}%` : '--'}</span>
+            <span className="text-[11px] font-mono text-emerald-700 font-bold">{isConnected && batteryVoltage != null ? `${batteryVoltage}V` : '--'}</span>
           </div>
 
-          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
             <div
               className={`h-full transition-all duration-500 ${
                 (batteryPct || 0) > 50 ? 'bg-emerald-500' : (batteryPct || 0) > 20 ? 'bg-amber-500' : 'bg-rose-500'
@@ -204,32 +204,32 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
           </div>
 
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-slate-400 font-medium">
+            <span className="text-slate-500 font-medium">
               {isConnected && batteryVoltage != null ? 'Divider 1/4' : 'Offline'}
             </span>
-            <span className="rounded bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-emerald-300">
+            <span className="rounded bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 font-mono text-[9px] font-bold text-emerald-800">
               {getPinLabel('battery_voltage', 'GPIO 36')}
             </span>
           </div>
         </div>
 
         {/* WiFi Signal RSSI Card */}
-        <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 transition-all hover:border-indigo-500/30 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">WiFi Link</span>
-            <Wifi className="h-4 w-4 text-indigo-400" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:border-indigo-400/60 shadow-sm space-y-2">
+          <div className="flex items-center justify-between text-slate-600">
+            <span className="text-xs font-bold">WiFi Link</span>
+            <Wifi className="h-4 w-4 text-indigo-600" />
           </div>
 
           <div className="flex items-baseline justify-between">
-            <span className="text-xl font-black text-white">{isConnected && rssiDbm != null ? `${rssiDbm}` : '--'}</span>
-            <span className="text-[10px] font-bold text-indigo-400">dBm</span>
+            <span className="text-xl font-black text-slate-900">{isConnected && rssiDbm != null ? `${rssiDbm}` : '--'}</span>
+            <span className="text-[10px] font-bold text-indigo-600">dBm</span>
           </div>
 
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-slate-400 font-medium">
+            <span className="text-slate-500 font-medium">
               {isConnected && rssiDbm != null ? (rssiDbm > -65 ? 'Strong Link' : 'Moderate') : 'Disconnected'}
             </span>
-            <span className="rounded bg-indigo-500/10 border border-indigo-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-indigo-300">
+            <span className="rounded bg-indigo-50 border border-indigo-200 px-1.5 py-0.2 font-mono text-[9px] font-bold text-indigo-800">
               2.4 GHz AP
             </span>
           </div>
@@ -237,24 +237,24 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
       </div>
 
       {/* Live Telemetry Trend Sparkline Graph */}
-      <div className="glass-card rounded-2xl border border-slate-800 bg-slate-900/90 p-4 shadow-xl space-y-3">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-emerald-400" />
-            <h4 className="text-xs font-black text-white uppercase tracking-wider">
+            <Activity className="h-4 w-4 text-emerald-600" />
+            <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">
               Real-Time Sensor Telemetry Trend
             </h4>
           </div>
 
           <div className="flex items-center gap-3 text-[10px] font-bold">
-            <span className="flex items-center gap-1 text-amber-400">
-              <span className="h-2 w-2 rounded-full bg-amber-400" /> Temp (°C)
+            <span className="flex items-center gap-1 text-amber-700">
+              <span className="h-2 w-2 rounded-full bg-amber-500" /> Temp (°C)
             </span>
-            <span className="flex items-center gap-1 text-cyan-400">
-              <span className="h-2 w-2 rounded-full bg-cyan-400" /> Humidity (%)
+            <span className="flex items-center gap-1 text-cyan-700">
+              <span className="h-2 w-2 rounded-full bg-cyan-500" /> Humidity (%)
             </span>
-            <span className="flex items-center gap-1 text-emerald-400">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" /> Soil (%)
+            <span className="flex items-center gap-1 text-emerald-700">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" /> Soil (%)
             </span>
           </div>
         </div>
@@ -265,28 +265,28 @@ export default function RoverSensorMetrics({ telemetry, history = [], isConnecte
               <AreaChart data={history} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#d97706" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#d97706" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorHum" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0284c7" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#0284c7" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorSoil" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#059669" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="time" stroke="#64748b" tick={{ fontSize: 10 }} />
-                <YAxis stroke="#64748b" tick={{ fontSize: 10 }} domain={[0, 100]} />
+                <XAxis dataKey="time" stroke="#94a3b8" tick={{ fontSize: 10 }} />
+                <YAxis stroke="#94a3b8" tick={{ fontSize: 10 }} domain={[0, 100]} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="temp" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTemp)" strokeWidth={2} />
-                <Area type="monotone" dataKey="humidity" stroke="#06b6d4" fillOpacity={1} fill="url(#colorHum)" strokeWidth={2} />
-                <Area type="monotone" dataKey="moisture" stroke="#10b981" fillOpacity={1} fill="url(#colorSoil)" strokeWidth={2} />
+                <Area type="monotone" dataKey="temp" stroke="#d97706" fillOpacity={1} fill="url(#colorTemp)" strokeWidth={2} />
+                <Area type="monotone" dataKey="humidity" stroke="#0284c7" fillOpacity={1} fill="url(#colorHum)" strokeWidth={2} />
+                <Area type="monotone" dataKey="moisture" stroke="#059669" fillOpacity={1} fill="url(#colorSoil)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-full items-center justify-center text-xs text-slate-500 font-semibold">
+            <div className="flex h-full items-center justify-center text-xs text-slate-400 font-semibold">
               Polling live sensor telemetry data points...
             </div>
           )}

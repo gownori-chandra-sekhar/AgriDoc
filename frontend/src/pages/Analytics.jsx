@@ -6,18 +6,11 @@ import HealthPieChart from '../components/analytics/HealthPieChart';
 import {
   BarChart3,
   TrendingUp,
-  ShieldCheck,
-  AlertTriangle,
-  Activity,
-  Calendar,
-  Sparkles,
-  Download,
   Sprout,
   CheckCircle2
 } from 'lucide-react';
 import Card from '../components/common/Card';
 import Badge from '../components/common/Badge';
-import Button from '../components/common/Button';
 import {
   ResponsiveContainer,
   LineChart,
@@ -32,7 +25,6 @@ import {
 export default function Analytics() {
   const { t } = useTranslation();
   const [analyticsData, setAnalyticsData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchAnalyticsData();
@@ -44,8 +36,6 @@ export default function Analytics() {
       setAnalyticsData(data);
     } catch (err) {
       console.warn('Analytics API offline, using cached distribution:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -61,79 +51,78 @@ export default function Analytics() {
   return (
     <div className="space-y-6 pb-24 md:pb-12 max-w-7xl mx-auto overflow-x-hidden">
       {/* Header Banner */}
-      <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-200 bg-white shadow-canva-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-glow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 border border-emerald-300">
             <BarChart3 className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
               {t('analytics.title') || 'Agricultural Analytics & Outbreak Intelligence'}
             </h1>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 font-medium">
               Aggregated epidemiology metrics across crop zones, YOLO detection frequency & health indices
             </p>
           </div>
         </div>
 
         <Badge variant="success" size="lg">
-          <CheckCircle2 className="h-3.5 w-3.5" />
+          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
           <span>SUPABASE SYNC ACTIVE</span>
         </Badge>
       </div>
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <Card className="p-5 border-slate-800 space-y-1.5 hover:border-emerald-500/40 transition-all">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Analyzed</span>
-          <div className="text-3xl font-black text-white">
+        <Card className="p-5 border-slate-200 bg-white space-y-1.5 shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Analyzed</span>
+          <div className="text-3xl font-black text-slate-900">
             {analyticsData?.total_scans || 128}
           </div>
-          <p className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+          <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
             <TrendingUp className="h-3 w-3" /> +18% from last month
           </p>
         </Card>
 
-        <Card className="p-5 border-slate-800 space-y-1.5 hover:border-teal-500/40 transition-all">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Healthy Crop Ratio</span>
-          <div className="text-3xl font-black text-teal-300">
+        <Card className="p-5 border-slate-200 bg-white space-y-1.5 shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Healthy Crop Ratio</span>
+          <div className="text-3xl font-black text-emerald-700">
             {analyticsData?.health_rate || '84.2%'}
           </div>
-          <p className="text-[11px] text-slate-400">Within optimal field threshold</p>
+          <p className="text-[11px] text-slate-500 font-medium">Within optimal field threshold</p>
         </Card>
 
-        <Card className="p-5 border-slate-800 space-y-1.5 hover:border-amber-500/40 transition-all">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mild Incursions</span>
-          <div className="text-3xl font-black text-amber-400">
+        <Card className="p-5 border-slate-200 bg-white space-y-1.5 shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Mild Incursions</span>
+          <div className="text-3xl font-black text-amber-600">
             {analyticsData?.mild_count || 16}
           </div>
-          <p className="text-[11px] text-amber-300 font-semibold">Treated with bio-pesticides</p>
+          <p className="text-[11px] text-amber-700 font-bold">Treated with bio-pesticides</p>
         </Card>
 
-        <Card className="p-5 border-slate-800 space-y-1.5 hover:border-rose-500/40 transition-all">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">High Urgency Alerts</span>
-          <div className="text-3xl font-black text-rose-400">
+        <Card className="p-5 border-slate-200 bg-white space-y-1.5 shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">High Urgency Alerts</span>
+          <div className="text-3xl font-black text-rose-600">
             {analyticsData?.severe_count || 4}
           </div>
-          <p className="text-[11px] text-rose-300 font-semibold">Immediate action taken</p>
+          <p className="text-[11px] text-rose-700 font-bold">Immediate action taken</p>
         </Card>
       </div>
 
       {/* Primary Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Top 5 Diseases Bar Chart */}
         <div className="lg:col-span-7">
           <Card
             header={
               <div className="flex items-center justify-between w-full">
-                <span className="text-xs font-black uppercase text-white flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-emerald-400" />
+                <span className="text-xs font-black uppercase text-slate-800 flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-emerald-600" />
                   Top Pathogens Diagnosed This Month
                 </span>
                 <Badge variant="info" size="sm">YOLO CLOUD</Badge>
               </div>
             }
-            className="border-slate-800 shadow-xl"
+            className="border-slate-200 bg-white shadow-sm"
           >
             <div className="h-72 w-full pt-2">
               <DiseaseBarChart />
@@ -141,19 +130,18 @@ export default function Analytics() {
           </Card>
         </div>
 
-        {/* Crop Health Donut Breakdown */}
         <div className="lg:col-span-5">
           <Card
             header={
               <div className="flex items-center justify-between w-full">
-                <span className="text-xs font-black uppercase text-white flex items-center gap-2">
-                  <Sprout className="h-4 w-4 text-teal-400" />
+                <span className="text-xs font-black uppercase text-slate-800 flex items-center gap-2">
+                  <Sprout className="h-4 w-4 text-teal-600" />
                   Field Crop Health Breakdown
                 </span>
                 <Badge variant="default" size="sm">SECTOR A-4</Badge>
               </div>
             }
-            className="border-slate-800 shadow-xl"
+            className="border-slate-200 bg-white shadow-sm"
           >
             <div className="h-72 w-full pt-2">
               <HealthPieChart />
@@ -166,28 +154,29 @@ export default function Analytics() {
       <Card
         header={
           <div className="flex items-center justify-between w-full">
-            <span className="text-xs font-black uppercase text-white flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-cyan-400" />
+            <span className="text-xs font-black uppercase text-slate-800 flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-cyan-600" />
               Monthly Scan Volume vs Infection Trajectory
             </span>
-            <span className="text-xs text-slate-400 font-mono">Jan - Jun 2026</span>
+            <span className="text-xs text-slate-500 font-mono">Jan - Jun 2026</span>
           </div>
         }
-        className="border-slate-800 shadow-xl"
+        className="border-slate-200 bg-white shadow-sm"
       >
         <div className="h-72 w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={monthlyTrends} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="month" stroke="#64748b" tick={{ fontSize: 11 }} />
               <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
+                  backgroundColor: '#ffffff',
+                  borderColor: '#e2e8f0',
                   borderRadius: '16px',
-                  color: '#f8fafc',
+                  color: '#0f172a',
                   fontSize: '12px',
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
                 }}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
@@ -195,17 +184,17 @@ export default function Analytics() {
                 type="monotone"
                 dataKey="scans"
                 name="Total Scans"
-                stroke="#10b981"
+                stroke="#059669"
                 strokeWidth={3}
-                dot={{ r: 4, fill: '#10b981' }}
+                dot={{ r: 4, fill: '#059669' }}
               />
               <Line
                 type="monotone"
                 dataKey="infections"
                 name="Infections Detected"
-                stroke="#f43f5e"
+                stroke="#e11d48"
                 strokeWidth={3}
-                dot={{ r: 4, fill: '#f43f5e' }}
+                dot={{ r: 4, fill: '#e11d48' }}
               />
             </LineChart>
           </ResponsiveContainer>

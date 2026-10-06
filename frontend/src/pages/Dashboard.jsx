@@ -10,16 +10,9 @@ import {
   Bot,
   ScanLine,
   BarChart3,
-  Sparkles,
   AlertTriangle,
-  ArrowRight,
-  ShieldCheck,
   CheckCircle2,
-  Layers,
-  Cpu,
   History as HistoryIcon,
-  Zap,
-  Activity
 } from 'lucide-react';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -37,14 +30,11 @@ import Esp32WifiScannerModal from '../components/dashboard/Esp32WifiScannerModal
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, role, switchRole } = useAuth();
+  const { user, role } = useAuth();
 
-  // Telemetry & Hardware Hook
   const {
     telemetry,
-    history: telemetryHistory,
     alerts,
-    identifiedSensors,
     isConnected,
     lastUpdated,
     toggleConnection,
@@ -52,7 +42,6 @@ export default function Dashboard() {
     triggerSnapshot,
   } = useTelemetry(true, 1500);
 
-  // Scanner Hook
   const {
     scan,
     isScanning,
@@ -63,13 +52,11 @@ export default function Dashboard() {
     stopVoiceAdvice,
   } = useScan();
 
-  // Reports History Hook
-  const { reports, isLoading: isHistoryLoading } = useHistory();
+  const { reports } = useHistory();
 
   const [isScannerModalOpen, setIsScannerModalOpen] = useState(false);
-  const [operatorViewMode, setOperatorViewMode] = useState('hud'); // 'hud' or 'map'
+  const [operatorViewMode, setOperatorViewMode] = useState('hud');
 
-  // Grab frame from ESP32 camera and feed directly into AI scanner
   const handleGrabEsp32Frame = async () => {
     try {
       await triggerSnapshot();
@@ -84,24 +71,24 @@ export default function Dashboard() {
   };
 
   /* =========================================================================
-     1. FARMER ROLE VIEW
+     1. FARMER ROLE VIEW (CANVA LIGHT THEME)
      ========================================================================= */
   if (role === ROLES.FARMER) {
     return (
       <div className="space-y-6 pb-24 md:pb-12 max-w-7xl mx-auto overflow-x-hidden">
         {/* Welcome Hero Banner */}
-        <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800/90 relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40">
+        <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-emerald-200 bg-gradient-to-r from-white via-emerald-50/60 to-teal-50/60 relative overflow-hidden shadow-canva-card">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div className="space-y-2 max-w-2xl">
               <div className="flex items-center gap-2">
                 <Badge variant="success" size="sm">FARMER COMMAND</Badge>
-                <span className="text-xs text-slate-400 font-medium">Field Sector A-4</span>
+                <span className="text-xs text-slate-500 font-bold">Field Sector A-4</span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                Namaste, <span className="text-emerald-400">{user?.name || 'Farmer'}</span>
+              <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                Namaste, <span className="text-emerald-600">{user?.name || 'Farmer'}</span>
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Photograph your crop leaf for instantaneous YOLOv8 disease diagnosis and step-by-step voice guidance in your language.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                Photograph your crop leaf for instantaneous YOLOv8 disease diagnosis and step-by-step voice guidance in your native language.
               </p>
             </div>
 
@@ -134,12 +121,12 @@ export default function Dashboard() {
         <div id="farmer-scan-section" className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ScanLine className="h-5 w-5 text-emerald-400" />
-              <h2 className="text-base sm:text-lg font-black text-white">
+              <ScanLine className="h-5 w-5 text-emerald-600" />
+              <h2 className="text-base sm:text-lg font-black text-slate-900">
                 Instant Leaf Disease Diagnosis
               </h2>
             </div>
-            <span className="text-xs text-emerald-400 font-bold hidden sm:inline">
+            <span className="text-xs text-emerald-700 font-bold hidden sm:inline">
               10+ Major Crop Pathogen Models Active
             </span>
           </div>
@@ -166,35 +153,35 @@ export default function Dashboard() {
 
         {/* Field Health & Recent Outbreak Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-5 border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-bold">
+          <Card className="p-5 border-slate-200 bg-white space-y-2 shadow-sm">
+            <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
               <span>Total Field Scans</span>
-              <ScanLine className="h-4 w-4 text-emerald-400" />
+              <ScanLine className="h-4 w-4 text-emerald-600" />
             </div>
-            <div className="text-3xl font-black text-white">{reports.length}</div>
-            <p className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+            <div className="text-3xl font-black text-slate-900">{reports.length}</div>
+            <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
               <CheckCircle2 className="h-3 w-3" /> Synced with Supabase Cloud
             </p>
           </Card>
 
-          <Card className="p-5 border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-bold">
+          <Card className="p-5 border-slate-200 bg-white space-y-2 shadow-sm">
+            <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
               <span>Active Crop Alerts</span>
-              <AlertTriangle className="h-4 w-4 text-amber-400" />
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
             </div>
-            <div className="text-3xl font-black text-amber-400">{alerts.length}</div>
-            <p className="text-[11px] text-slate-400">
+            <div className="text-3xl font-black text-amber-600">{alerts.length}</div>
+            <p className="text-[11px] text-slate-500 font-medium">
               {alerts.length > 0 ? 'Review latest outbreak reports' : 'All field sectors healthy'}
             </p>
           </Card>
 
-          <Card className="p-5 border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-bold">
+          <Card className="p-5 border-slate-200 bg-white space-y-2 shadow-sm">
+            <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
               <span>Robot Field Status</span>
-              <Bot className="h-4 w-4 text-cyan-400" />
+              <Bot className="h-4 w-4 text-cyan-600" />
             </div>
-            <div className="text-xl font-black text-white">{isConnected ? 'Online & Cruising' : 'Docked at Station'}</div>
-            <p className="text-[11px] text-slate-400">
+            <div className="text-xl font-black text-slate-900">{isConnected ? 'Online & Cruising' : 'Docked at Station'}</div>
+            <p className="text-[11px] text-slate-500 font-medium">
               {isConnected ? `${telemetry?.battery_pct || 85}% Battery • ${telemetry?.speed_kmh || 2.4} km/h` : 'Ready for mission deployment'}
             </p>
           </Card>
@@ -204,42 +191,42 @@ export default function Dashboard() {
   }
 
   /* =========================================================================
-     2. FIELD OPERATOR ROLE VIEW (ROBOT TELEMETRY & CONTROLLER)
+     2. FIELD OPERATOR ROLE VIEW (CANVA LIGHT THEME)
      ========================================================================= */
   if (role === ROLES.OPERATOR) {
     return (
       <div className="space-y-6 pb-24 md:pb-12 max-w-7xl mx-auto overflow-x-hidden">
         {/* Operator Command Header */}
-        <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-800/90 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-200 bg-white shadow-canva-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className={`h-3 w-3 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
-              <h1 className="text-2xl sm:text-3xl font-black text-white">AgriRover Teleoperation HUD</h1>
+              <span className={`h-3 w-3 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900">AgriRover Teleoperation HUD</h1>
               <Badge variant="info" size="sm">OPERATOR</Badge>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 font-medium mt-1">
               Low-latency ESP32-CAM stream, directional teleoperation, GPS waypoints & sensor diagnostics
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-2xl bg-slate-950 p-1 border border-slate-800">
+            <div className="flex items-center rounded-2xl bg-slate-100 p-1 border border-slate-200">
               <button
                 onClick={() => setOperatorViewMode('hud')}
-                className={`rounded-xl px-4 py-2 text-xs font-black transition-all ${
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                   operatorViewMode === 'hud'
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-glow-sm'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 HUD Stream
               </button>
               <button
                 onClick={() => setOperatorViewMode('map')}
-                className={`rounded-xl px-4 py-2 text-xs font-black transition-all ${
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                   operatorViewMode === 'map'
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-glow-sm'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Field Map
@@ -258,7 +245,7 @@ export default function Dashboard() {
         />
 
         {/* Autonomous Mission Mode Switcher */}
-        <Card className="p-5 border-slate-800 bg-slate-900/90 shadow-xl">
+        <Card className="p-5 border-slate-200 bg-white shadow-sm">
           <ModeSwitch
             currentStatus={telemetry?.status || 'Idle'}
             isConnected={isConnected}
@@ -298,18 +285,17 @@ export default function Dashboard() {
   }
 
   /* =========================================================================
-     3. ADMIN / AGRONOMIST ROLE VIEW
+     3. ADMIN / AGRONOMIST ROLE VIEW (CANVA LIGHT THEME)
      ========================================================================= */
   return (
     <div className="space-y-6 pb-24 md:pb-12 max-w-7xl mx-auto overflow-x-hidden">
-      {/* Admin Header */}
-      <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-200 bg-white shadow-canva-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-black text-white">Agronomist Intelligence Center</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Agronomist Intelligence Center</h1>
             <Badge variant="default" size="sm">ADMIN</Badge>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 font-medium mt-1">
             Geospatial outbreak trends, pathogen analytics, telemetry diagnostics & exportable field logs
           </p>
         </div>
@@ -337,26 +323,26 @@ export default function Dashboard() {
 
       {/* Analytics KPI Ribbon */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-5 border-slate-800 space-y-3">
+        <Card className="p-5 border-slate-200 bg-white space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-white flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-emerald-400" />
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-emerald-600" />
               Top Pathogens Detected
             </h3>
-            <span className="text-xs text-slate-400 font-bold">This Season</span>
+            <span className="text-xs text-slate-500 font-bold">This Season</span>
           </div>
           <div className="h-64 w-full">
             <DiseaseBarChart />
           </div>
         </Card>
 
-        <Card className="p-5 border-slate-800 space-y-3">
+        <Card className="p-5 border-slate-200 bg-white space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-white flex items-center gap-2">
-              <Sprout className="h-4 w-4 text-teal-400" />
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <Sprout className="h-4 w-4 text-teal-600" />
               Field Health Breakdown
             </h3>
-            <span className="text-xs text-emerald-400 font-bold">82% Optimal</span>
+            <span className="text-xs text-emerald-700 font-bold">82% Optimal</span>
           </div>
           <div className="h-64 w-full">
             <HealthPieChart />

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Scissors, Pause, Home, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Play, Scissors, Pause, Home, CheckCircle2 } from 'lucide-react';
 import ConfirmationModal from '../common/ConfirmationModal';
-import Button from '../common/Button';
 
 export default function ModeSwitch({ currentStatus = 'Idle', isConnected = false, onModeChange, disabled = false }) {
   const { t } = useTranslation();
@@ -72,10 +71,10 @@ export default function ModeSwitch({ currentStatus = 'Idle', isConnected = false
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-black uppercase tracking-wider text-slate-300">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
           Autonomous Mission Control Switch
         </h3>
-        <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+        <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
           CURRENT STATE: {currentStatus.toUpperCase()}
         </span>
       </div>
@@ -92,26 +91,25 @@ export default function ModeSwitch({ currentStatus = 'Idle', isConnected = false
               disabled={!isConnected || disabled}
               className={`flex flex-col items-start p-4 rounded-2xl border text-left transition-all ${
                 !isConnected
-                  ? 'opacity-40 cursor-not-allowed bg-slate-950 border-slate-800 text-slate-500'
+                  ? 'opacity-40 cursor-not-allowed bg-slate-50 border-slate-200 text-slate-400'
                   : isActive
-                  ? 'bg-gradient-to-br from-emerald-600 to-teal-500 text-white border-emerald-400 shadow-glow-sm ring-2 ring-emerald-400/40'
-                  : 'bg-slate-900/90 border-slate-800 text-slate-200 hover:bg-slate-850 hover:border-emerald-500/40 hover:scale-[1.02]'
+                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-md ring-2 ring-emerald-400'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-300'
               }`}
             >
               <div className="flex items-center justify-between w-full mb-2">
-                <div className={`p-2 rounded-xl ${isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-emerald-400'}`}>
+                <div className={`p-2 rounded-xl ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-emerald-700'}`}>
                   <Icon className="h-4 w-4" />
                 </div>
                 {isActive && <CheckCircle2 className="h-4 w-4 text-white" />}
               </div>
-              <div className="text-xs font-black">{mode.label}</div>
-              <div className="text-[10px] opacity-75 mt-0.5">{mode.sublabel}</div>
+              <div className="text-xs font-bold">{mode.label}</div>
+              <div className="text-[10px] opacity-80 mt-0.5 font-medium">{mode.sublabel}</div>
             </button>
           );
         })}
       </div>
 
-      {/* Confirmation Modal */}
       {pendingMode && (
         <ConfirmationModal
           isOpen={isModalOpen}

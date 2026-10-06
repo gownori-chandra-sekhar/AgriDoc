@@ -85,24 +85,24 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600">
               <Cpu className="h-6 w-6 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-black text-white tracking-wide">
+                <h3 className="text-base font-black text-slate-900 tracking-wide">
                   ESP32 Hardware Discovery
                 </h3>
-                <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-400 border border-emerald-500/40 uppercase tracking-wider">
+                <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-black text-emerald-800 border border-emerald-300 uppercase tracking-wider">
                   ESP32 Only
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 font-medium">
                 Filtered strictly for ESP32-S3, ESP32-CAM & Espressif hardware nodes
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
 
           <button
             onClick={onClose}
-            className="rounded-full bg-slate-800 p-2 text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
+            className="rounded-full bg-slate-100 p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -118,13 +118,13 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
 
         {/* Tab Switcher */}
         <div className="flex items-center justify-between gap-3">
-          <div className="flex rounded-xl bg-slate-950 p-1 border border-slate-800">
+          <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
             <button
               onClick={() => setActiveTab('scan')}
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-extrabold transition-all ${
                 activeTab === 'scan'
-                  ? 'bg-emerald-600 text-white shadow'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Radio className="h-3.5 w-3.5" />
@@ -135,8 +135,8 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
               onClick={() => setActiveTab('manual')}
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-extrabold transition-all ${
                 activeTab === 'manual'
-                  ? 'bg-emerald-600 text-white shadow'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Globe className="h-3.5 w-3.5" />
@@ -147,9 +147,9 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
           <button
             onClick={startNetworkScan}
             disabled={isScanning}
-            className="flex items-center gap-1.5 rounded-xl bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-slate-700 hover:text-white transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-xl bg-slate-100 border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-all disabled:opacity-50"
           >
-            <RotateCcw className={`h-3.5 w-3.5 ${isScanning ? 'animate-spin' : ''}`} />
+            <RotateCcw className={`h-3.5 w-3.5 ${isScanning ? 'animate-spin text-emerald-600' : ''}`} />
             <span>Scan ESP32</span>
           </button>
         </div>
@@ -158,19 +158,19 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
         {activeTab === 'scan' && (
           <div className="space-y-4">
             {isScanning ? (
-              <div className="glass-card rounded-2xl border border-slate-800 bg-slate-950 p-6 flex flex-col items-center justify-center space-y-3 text-center">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 flex flex-col items-center justify-center space-y-3 text-center">
                 <div className="relative flex h-16 w-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full border-2 border-emerald-500/30 animate-ping" />
-                  <div className="absolute inset-2 rounded-full border-2 border-emerald-400/50 animate-pulse" />
-                  <Cpu className="h-8 w-8 text-emerald-400 animate-bounce" />
+                  <div className="absolute inset-0 rounded-full border-2 border-emerald-300 animate-ping" />
+                  <div className="absolute inset-2 rounded-full border-2 border-emerald-400 animate-pulse" />
+                  <Cpu className="h-8 w-8 text-emerald-600 animate-bounce" />
                 </div>
 
                 <div>
-                  <p className="text-xs font-extrabold text-white">Scanning 2.4GHz Spectrum for ESP32 Nodes...</p>
-                  <p className="text-[11px] text-slate-400 font-mono">Filtering by Espressif MAC OUIs & ESP32 SSID Signatures</p>
+                  <p className="text-xs font-extrabold text-slate-900">Scanning 2.4GHz Spectrum for ESP32 Nodes...</p>
+                  <p className="text-[11px] text-slate-500 font-mono font-medium">Filtering by Espressif MAC OUIs & ESP32 SSID Signatures</p>
                 </div>
 
-                <div className="w-full max-w-xs h-2 rounded-full bg-slate-800 overflow-hidden">
+                <div className="w-full max-w-xs h-2 rounded-full bg-slate-200 overflow-hidden">
                   <div
                     className="h-full bg-emerald-500 transition-all duration-300"
                     style={{ width: `${progress}%` }}
@@ -188,36 +188,36 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
                         key={node.device_id}
                         className={`rounded-2xl border p-4 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                           isCurrent
-                            ? 'border-emerald-500/60 bg-emerald-950/20'
-                            : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-800/40'
+                            ? 'border-emerald-400 bg-emerald-50/70 shadow-sm'
+                            : 'border-slate-200 bg-slate-50/80 hover:border-slate-300 hover:bg-slate-100/90'
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 font-mono text-xs font-bold">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white border border-slate-200 text-emerald-600 font-mono text-xs font-bold">
                             <Cpu className="h-5 w-5" />
                           </div>
 
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="text-xs font-black text-white">{node.device_id}</h4>
-                              <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[9px] font-extrabold text-emerald-400 border border-emerald-500/30">
+                              <h4 className="text-xs font-black text-slate-900">{node.device_id}</h4>
+                              <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[9px] font-extrabold text-emerald-800 border border-emerald-300">
                                 SSID: {node.ssid}
                               </span>
                               {node.chipset && (
-                                <span className="rounded-md bg-cyan-500/20 px-1.5 py-0.5 text-[9px] font-bold text-cyan-300 border border-cyan-500/30">
+                                <span className="rounded-md bg-cyan-100 px-1.5 py-0.5 text-[9px] font-bold text-cyan-800 border border-cyan-300">
                                   {node.chipset}
                                 </span>
                               )}
                             </div>
 
-                            <p className="text-[11px] text-slate-400">{node.role}</p>
+                            <p className="text-[11px] text-slate-600 font-medium">{node.role}</p>
 
                             <div className="flex items-center gap-3 text-[10px] text-slate-500 font-mono flex-wrap">
-                              <span>IP: <strong className="text-slate-300">{node.ip_address}</strong></span>
+                              <span>IP: <strong className="text-slate-800">{node.ip_address}</strong></span>
                               <span>•</span>
                               <span>MAC: {node.mac_address}</span>
                               <span>•</span>
-                              <span className="text-emerald-400 flex items-center gap-1 font-bold">
+                              <span className="text-emerald-700 flex items-center gap-1 font-bold">
                                 <Signal className="h-3 w-3" /> {node.rssi_dbm} dBm ({node.signal_quality})
                               </span>
                             </div>
@@ -226,10 +226,10 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
 
                         <button
                           onClick={() => handleConnectNode(node)}
-                          className={`rounded-xl px-4 py-2 text-xs font-bold transition-all shadow shrink-0 flex items-center gap-1.5 ${
+                          className={`rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm shrink-0 flex items-center gap-1.5 ${
                             isCurrent
-                              ? 'bg-emerald-600 text-white border border-emerald-400/40'
-                              : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20'
+                              ? 'bg-emerald-700 text-white'
+                              : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                           }`}
                         >
                           <span>{isCurrent ? 'Scan Pins' : 'Connect & Scan Pins'}</span>
@@ -239,9 +239,9 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
                     );
                   })
                 ) : (
-                  <div className="py-8 text-center text-xs text-slate-400 space-y-2">
-                    <p className="font-bold text-white">No ESP32 Hardware Nodes Found</p>
-                    <p className="text-[11px] text-slate-500">
+                  <div className="py-8 text-center text-xs text-slate-500 space-y-2">
+                    <p className="font-bold text-slate-800">No ESP32 Hardware Nodes Found</p>
+                    <p className="text-[11px] text-slate-500 font-medium">
                       Non-ESP32 WiFi routers are filtered out. Ensure your ESP32-S3 / ESP32-CAM is powered and in AP/WiFi mode.
                     </p>
                   </div>
@@ -254,8 +254,8 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
         {/* Manual Static IP / Access Point Tab */}
         {activeTab === 'manual' && (
           <form onSubmit={handleManualConnect} className="space-y-4 pt-1">
-            <div className="glass-card rounded-2xl border border-slate-800 bg-slate-950 p-4 space-y-3">
-              <label className="block text-xs font-black uppercase text-slate-300">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+              <label className="block text-xs font-black uppercase text-slate-700">
                 Target Rover IP / Host & Port
               </label>
               <div className="flex items-center gap-2">
@@ -264,11 +264,11 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
                   value={manualIp}
                   onChange={(e) => setManualIp(e.target.value)}
                   placeholder="e.g. localhost:8088 or 192.168.4.1"
-                  className="flex-1 rounded-xl bg-slate-900 border border-slate-700 px-4 py-2.5 text-xs text-white font-mono placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                  className="flex-1 rounded-xl bg-white border border-slate-300 px-4 py-2.5 text-xs text-slate-900 font-mono placeholder-slate-400 focus:border-emerald-500 focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20"
+                  className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-all shadow-md"
                 >
                   <span>Connect & Scan</span>
                   <ArrowRight className="h-4 w-4" />
@@ -281,14 +281,14 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
                 <button
                   type="button"
                   onClick={() => setManualIp('localhost:8088')}
-                  className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 text-[11px] font-bold text-emerald-400 hover:bg-emerald-500/20"
+                  className="rounded-lg bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-[11px] font-bold text-emerald-800 hover:bg-emerald-100"
                 >
                   ⚡ localhost:8088 (Rover Live Web)
                 </button>
                 <button
                   type="button"
                   onClick={() => setManualIp('192.168.4.1')}
-                  className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-[11px] font-medium text-slate-300 hover:bg-slate-700"
+                  className="rounded-lg bg-slate-200/80 border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-300"
                 >
                   192.168.4.1 (ESP32 AP)
                 </button>
@@ -298,10 +298,10 @@ export default function Esp32WifiScannerModal({ isOpen, onClose, onSelectNode, i
         )}
 
         {/* Footer */}
-        <div className="flex justify-end pt-2 border-t border-slate-800">
+        <div className="flex justify-end pt-2 border-t border-slate-100">
           <button
             onClick={onClose}
-            className="rounded-xl bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+            className="rounded-xl bg-slate-100 border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-colors"
           >
             Cancel
           </button>

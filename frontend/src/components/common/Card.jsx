@@ -13,15 +13,15 @@ export default function Card({
   const baseStyles = 'rounded-3xl border transition-all duration-300 relative overflow-hidden';
 
   const variants = {
-    glass: 'glass-card border-slate-800/90 bg-slate-900/80 backdrop-blur-xl shadow-xl',
-    panel: 'glass-panel border-slate-800/90 bg-slate-950/90 shadow-2xl',
-    solid: 'bg-slate-900 border-slate-800 shadow-md',
-    emerald: 'bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 border-emerald-500/30 shadow-glow-sm',
-    alert: 'bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/40 border-rose-500/30 shadow-glow-rose',
+    glass: 'glass-card border-[#e2ece4] bg-white shadow-canva-card',
+    panel: 'glass-panel border-[#e2ece4] bg-white/95 shadow-canva-card',
+    solid: 'bg-white border-[#e2ece4] shadow-sm',
+    emerald: 'bg-gradient-to-br from-white via-white to-emerald-50/70 border-emerald-200 shadow-canva-card',
+    alert: 'bg-gradient-to-br from-white via-white to-rose-50/70 border-rose-200 shadow-sm',
   };
 
   const interactiveStyles = interactive
-    ? 'hover:border-emerald-500/50 hover:shadow-glow-sm hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+    ? 'hover:border-emerald-400 hover:shadow-canva-hover hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
     : '';
 
   return (
@@ -31,13 +31,13 @@ export default function Card({
       {...props}
     >
       {header && (
-        <div className="border-b border-slate-800/80 px-5 py-4 bg-slate-900/60 flex items-center justify-between">
+        <div className="border-b border-slate-100 px-5 py-4 bg-slate-50/70 flex items-center justify-between text-slate-900 font-bold">
           {header}
         </div>
       )}
       <div className="p-5 sm:p-6">{children}</div>
       {footer && (
-        <div className="border-t border-slate-800/80 px-5 py-3.5 bg-slate-950/60 flex items-center justify-between">
+        <div className="border-t border-slate-100 px-5 py-3.5 bg-slate-50/50 flex items-center justify-between text-slate-600">
           {footer}
         </div>
       )}

@@ -46,7 +46,7 @@ export default function MobileNav() {
   const navItems = getNavItems();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around glass-panel border-t border-slate-800/90 py-2 px-2 shadow-2xl safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around glass-panel border-t border-slate-200/90 bg-white/95 py-2 px-2 shadow-xl safe-area-bottom">
       {navItems.map((item) => {
         const Icon = item.icon;
         return (
@@ -56,8 +56,8 @@ export default function MobileNav() {
             className={({ isActive }) =>
               `flex flex-col items-center justify-center min-w-[48px] min-h-[48px] rounded-2xl px-2 py-1 transition-all ${
                 isActive
-                  ? 'text-emerald-400 bg-emerald-500/15 font-black border border-emerald-500/30'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'text-emerald-700 bg-emerald-100/80 font-bold'
+                  : 'text-slate-500 hover:text-slate-800'
               }`
             }
           >

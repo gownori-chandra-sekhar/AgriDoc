@@ -15,23 +15,23 @@ export default function Button({
   ...props
 }) {
   const baseStyles =
-    'relative inline-flex items-center justify-center font-bold transition-all select-none rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 min-h-[44px] sm:min-h-[48px]';
+    'relative inline-flex items-center justify-center font-bold transition-all select-none rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 min-h-[44px] sm:min-h-[48px]';
 
   const variants = {
     primary:
-      'bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 text-slate-950 font-black shadow-glow-sm hover:shadow-glow-md hover:scale-[1.02]',
+      'bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white font-bold shadow-glow-sm hover:shadow-glow-md hover:from-emerald-500 hover:to-teal-500 hover:scale-[1.01]',
     secondary:
-      'bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-850 hover:border-emerald-500/50 hover:text-white shadow-sm',
+      'bg-white border border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-800 shadow-sm',
     danger:
-      'bg-rose-600/20 border border-rose-500/40 text-rose-300 hover:bg-rose-600 hover:text-white shadow-glow-rose',
+      'bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-600 hover:text-white shadow-sm',
     warning:
-      'bg-amber-600/20 border border-amber-500/40 text-amber-300 hover:bg-amber-600 hover:text-slate-950 shadow-lg',
+      'bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-500 hover:text-white shadow-sm',
     outline:
-      'border-2 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-400',
+      'border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50',
     ghost:
-      'text-slate-400 hover:text-white hover:bg-slate-800/60 min-h-[38px]',
+      'text-slate-600 hover:text-slate-900 hover:bg-slate-100 min-h-[38px]',
     cyber:
-      'bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-500 text-white font-black shadow-glow-cyan hover:scale-[1.02]',
+      'bg-gradient-to-r from-teal-600 via-emerald-600 to-green-600 text-white font-bold shadow-md hover:scale-[1.01]',
   };
 
   const sizes = {

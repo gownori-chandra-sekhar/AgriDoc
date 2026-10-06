@@ -7,11 +7,8 @@ import {
   Wifi,
   Activity,
   Power,
-  RotateCcw,
   Zap,
-  Radio,
   Clock,
-  Cpu
 } from 'lucide-react';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
@@ -23,7 +20,6 @@ export default function TelemetryPanel({
   lastUpdated,
   onToggleConnect,
   onOpenScanner,
-  onSimulateToggle,
 }) {
   const { t } = useTranslation();
 
@@ -36,48 +32,47 @@ export default function TelemetryPanel({
 
   return (
     <div className="space-y-4">
-      {/* Top Connection HUD Bar */}
-      <Card className="border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 p-5 shadow-2xl">
+      {/* Top Connection Bar */}
+      <Card className="border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div
               className={`relative flex h-12 w-12 items-center justify-center rounded-2xl border ${
                 isConnected
-                  ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40 shadow-glow-sm'
-                  : 'bg-rose-500/15 text-rose-400 border-rose-500/40 shadow-glow-rose'
+                  ? 'bg-emerald-100 text-emerald-700 border-emerald-300 shadow-sm'
+                  : 'bg-rose-100 text-rose-700 border-rose-300'
               }`}
             >
               {isConnected ? <Activity className="h-6 w-6 animate-pulse" /> : <Power className="h-6 w-6" />}
               <div
                 className={`absolute -top-1 -right-1 h-3 w-3 rounded-full ${
-                  isConnected ? 'bg-emerald-400 animate-ping' : 'bg-rose-500'
-                } ring-2 ring-slate-950`}
+                  isConnected ? 'bg-emerald-500 animate-ping' : 'bg-rose-500'
+                } ring-2 ring-white`}
               />
             </div>
 
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-black text-white">
+                <h3 className="text-base font-black text-slate-900">
                   {isConnected ? `AgriRover: ${telemetry?.robot_id || 'ESP32-S3'}` : 'Rover Hardware Offline'}
                 </h3>
                 <Badge variant={isConnected ? 'success' : 'danger'} size="sm">
                   {isConnected ? 'STREAMING' : 'OFFLINE'}
                 </Badge>
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 font-medium">
                 {lastUpdated ? (
                   <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3 text-emerald-400" />
+                    <Clock className="h-3 w-3 text-emerald-600" />
                     Last updated: {lastUpdated.toLocaleTimeString()}
                   </span>
                 ) : (
-                  <span>Connect ESP32 node or activate interactive simulation mode</span>
+                  <span>Connect ESP32 node or simulate telemetry stream</span>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-2 flex-wrap">
             {!isConnected && (
               <Button
@@ -102,68 +97,64 @@ export default function TelemetryPanel({
         </div>
       </Card>
 
-      {/* Main Metric Cards Grid */}
+      {/* Metric Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {/* Battery Power */}
-        <div className="glass-card rounded-2xl p-4 border border-slate-800 bg-slate-900/90 space-y-1.5 hover:border-emerald-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+        <div className="glass-card rounded-2xl p-4 border border-slate-200 bg-white space-y-1.5 hover:border-emerald-400 transition-all shadow-sm">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
             <span>Battery Power</span>
-            <BatteryCharging className="h-4 w-4 text-emerald-400" />
+            <BatteryCharging className="h-4 w-4 text-emerald-600" />
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl sm:text-3xl font-black text-white">{battery}%</span>
-            <span className="text-[10px] text-emerald-400 font-bold uppercase">{isConnected ? 'Nominal' : 'Offline'}</span>
+            <span className="text-2xl sm:text-3xl font-black text-slate-900">{battery}%</span>
+            <span className="text-[10px] text-emerald-700 font-bold uppercase">{isConnected ? 'Nominal' : 'Offline'}</span>
           </div>
-          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-teal-300 transition-all duration-500"
+              className="h-full bg-emerald-600 transition-all duration-500"
               style={{ width: `${battery}%` }}
             />
           </div>
         </div>
 
-        {/* Operating Speed */}
-        <div className="glass-card rounded-2xl p-4 border border-slate-800 bg-slate-900/90 space-y-1.5 hover:border-cyan-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+        <div className="glass-card rounded-2xl p-4 border border-slate-200 bg-white space-y-1.5 hover:border-cyan-400 transition-all shadow-sm">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
             <span>Cruising Speed</span>
-            <Gauge className="h-4 w-4 text-cyan-400" />
+            <Gauge className="h-4 w-4 text-cyan-600" />
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl sm:text-3xl font-black text-cyan-400 font-mono">{speed}</span>
-            <span className="text-xs text-slate-400 font-bold">km/h</span>
+            <span className="text-2xl sm:text-3xl font-black text-cyan-700 font-mono">{speed}</span>
+            <span className="text-xs text-slate-500 font-bold">km/h</span>
           </div>
-          <p className="text-[10px] text-slate-400 font-medium truncate">
+          <p className="text-[10px] text-slate-500 font-medium truncate">
             {isConnected ? `Mode: ${status}` : 'Offline'}
           </p>
         </div>
 
-        {/* GPS Coordinates */}
-        <div className="glass-card rounded-2xl p-4 border border-slate-800 bg-slate-900/90 space-y-1.5 hover:border-teal-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+        <div className="glass-card rounded-2xl p-4 border border-slate-200 bg-white space-y-1.5 hover:border-teal-400 transition-all shadow-sm">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
             <span>Sub-Meter GPS</span>
-            <MapPin className="h-4 w-4 text-teal-400" />
+            <MapPin className="h-4 w-4 text-teal-600" />
           </div>
-          <div className="text-sm sm:text-base font-black text-white font-mono truncate">
+          <div className="text-sm sm:text-base font-black text-slate-900 font-mono truncate">
             {lat.toFixed(4)}°N, {lng.toFixed(4)}°E
           </div>
-          <p className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Sector A-4
+          <p className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Sector A-4
           </p>
         </div>
 
-        {/* Signal RSSI & Frequency */}
-        <div className="glass-card rounded-2xl p-4 border border-slate-800 bg-slate-900/90 space-y-1.5 hover:border-indigo-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+        <div className="glass-card rounded-2xl p-4 border border-slate-200 bg-white space-y-1.5 hover:border-indigo-400 transition-all shadow-sm">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
             <span>WiFi Signal</span>
-            <Wifi className="h-4 w-4 text-indigo-400" />
+            <Wifi className="h-4 w-4 text-indigo-600" />
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl sm:text-3xl font-black text-white">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900">
               {isConnected && rssi != null ? rssi : '--'}
             </span>
-            <span className="text-xs text-indigo-400 font-bold">dBm</span>
+            <span className="text-xs text-indigo-600 font-bold">dBm</span>
           </div>
-          <p className="text-[10px] text-slate-400 font-medium">
+          <p className="text-[10px] text-slate-500 font-medium">
             {isConnected ? '2.4 GHz ESP32 Link' : 'Disconnected'}
           </p>
         </div>

@@ -9,7 +9,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import { CardSkeleton } from './components/common/Skeleton';
 import './i18n/i18n';
 
-// Lazy-loaded route pages for optimal mobile performance & fast startup
+// Lazy-loaded route pages
 const LandingHome = lazy(() => import('./pages/LandingHome'));
 const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -29,10 +29,8 @@ function PageLoader() {
 }
 
 function MainLayout() {
-  const { user } = useAuth();
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen bg-[#f4f9f5] text-slate-800 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
       <Header />
 
       <div className="flex flex-1 mx-auto w-full max-w-7xl">
@@ -69,7 +67,6 @@ function MainLayout() {
                 }
               />
 
-              {/* Field Operator & Admin specific routes */}
               <Route
                 path="/hardware-scan"
                 element={
@@ -79,7 +76,6 @@ function MainLayout() {
                 }
               />
 
-              {/* Admin / Agronomist specific route */}
               <Route
                 path="/analytics"
                 element={
@@ -89,7 +85,6 @@ function MainLayout() {
                 }
               />
 
-              {/* General Settings */}
               <Route
                 path="/settings"
                 element={

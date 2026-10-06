@@ -11,16 +11,13 @@ import {
   Sparkles,
   Settings as SettingsIcon,
   ChevronRight,
-  ShieldCheck,
   UserCheck
 } from 'lucide-react';
-import Badge from '../common/Badge';
 
 export default function Sidebar() {
   const { t } = useTranslation();
-  const { role, switchRole } = useAuth();
+  const { role } = useAuth();
 
-  // Role-Specific Navigation Menu Items
   const getNavItems = () => {
     switch (role) {
       case ROLES.OPERATOR:
@@ -34,7 +31,7 @@ export default function Sidebar() {
       case ROLES.ADMIN:
         return [
           { to: '/', label: 'Command Overview', icon: Bot },
-          { to: '/analytics', label: 'Outbreak Analytics', icon: BarChart3, badge: 'RECHARTS' },
+          { to: '/analytics', label: 'Outbreak Analytics', icon: BarChart3, badge: 'CHARTS' },
           { to: '/history', label: 'Reports Database', icon: History, badge: 'CSV' },
           { to: '/hardware-scan', label: 'Hardware Telemetry', icon: Cpu },
           { to: '/settings', label: 'System Settings', icon: SettingsIcon },
@@ -53,16 +50,16 @@ export default function Sidebar() {
   const navItems = getNavItems();
 
   return (
-    <aside className="hidden md:flex w-64 flex-col glass-panel border-r border-slate-800/90 p-4 min-h-[calc(100vh-65px)]">
+    <aside className="hidden md:flex w-64 flex-col glass-panel border-r border-slate-200/80 bg-white/95 p-4 min-h-[calc(100vh-65px)] shadow-sm">
       {/* Role Indicator Banner */}
-      <div className="mb-4 px-3 py-2 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+      <div className="mb-4 px-3 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <UserCheck className="h-4 w-4 text-emerald-400" />
-          <span className="text-[11px] font-black uppercase text-white tracking-wider">
+          <UserCheck className="h-4 w-4 text-emerald-600" />
+          <span className="text-[11px] font-black uppercase text-emerald-900 tracking-wider">
             {role === ROLES.OPERATOR ? 'Operator Mode' : role === ROLES.ADMIN ? 'Agronomist Mode' : 'Farmer Mode'}
           </span>
         </div>
-        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
       </div>
 
       {/* Main Navigation Links */}
@@ -74,10 +71,10 @@ export default function Sidebar() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `group flex items-center justify-between rounded-2xl px-4 py-3 text-xs font-black transition-all ${
+                `group flex items-center justify-between rounded-2xl px-4 py-3 text-xs font-bold transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-emerald-600 via-emerald-500 to-green-500 text-white shadow-glow-sm ring-1 ring-emerald-400/40'
-                    : 'text-slate-300 hover:bg-slate-850 hover:text-white border border-transparent hover:border-slate-800'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm ring-1 ring-emerald-500'
+                    : 'text-slate-600 hover:bg-emerald-50/80 hover:text-emerald-800'
                 }`
               }
             >
@@ -86,7 +83,7 @@ export default function Sidebar() {
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 rounded bg-black/20 text-emerald-300 border border-white/10">
+                <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
                   {item.badge}
                 </span>
               )}
@@ -96,14 +93,14 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer Role Switcher Shortcut */}
-      <div className="mt-auto pt-4 border-t border-slate-800/80">
+      <div className="mt-auto pt-4 border-t border-slate-100">
         <NavLink
           to="/settings"
-          className="block rounded-2xl bg-slate-900/80 border border-slate-800 p-3 hover:border-emerald-500/50 transition-all group"
+          className="block rounded-2xl bg-slate-50 border border-slate-200 p-3 hover:bg-emerald-50 hover:border-emerald-300 transition-all group"
         >
-          <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+          <div className="flex items-center justify-between text-xs font-bold text-slate-800">
             <span>Switch Role</span>
-            <ChevronRight className="h-3.5 w-3.5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="h-3.5 w-3.5 text-emerald-600 group-hover:translate-x-1 transition-transform" />
           </div>
           <p className="text-[10px] text-slate-500 mt-0.5">Test as Farmer, Operator, or Admin</p>
         </NavLink>

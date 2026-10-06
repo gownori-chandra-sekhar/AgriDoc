@@ -32,18 +32,18 @@ export default function LanguageSwitcher({ variant = 'select', className = '' })
               onClick={() => handleLanguageChange(lang.code)}
               className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all text-left ${
                 isSelected
-                  ? 'bg-emerald-500/20 border-emerald-500 text-white shadow-glow-sm ring-1 ring-emerald-400'
-                  : 'bg-slate-900/90 border-slate-800 text-slate-300 hover:bg-slate-850 hover:border-slate-700'
+                  ? 'bg-emerald-50 border-emerald-500 text-emerald-900 shadow-sm ring-1 ring-emerald-500'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <span className="text-lg">{lang.flag}</span>
                 <div>
-                  <div className="text-xs font-black">{lang.native}</div>
-                  <div className="text-[10px] text-slate-400">{lang.label}</div>
+                  <div className="text-xs font-bold text-slate-900">{lang.native}</div>
+                  <div className="text-[10px] text-slate-500">{lang.label}</div>
                 </div>
               </div>
-              {isSelected && <Check className="h-4 w-4 text-emerald-400" />}
+              {isSelected && <Check className="h-4 w-4 text-emerald-600" />}
             </button>
           );
         })}
@@ -53,16 +53,16 @@ export default function LanguageSwitcher({ variant = 'select', className = '' })
 
   // Default dropdown select
   return (
-    <div className={`relative flex items-center gap-2 rounded-2xl bg-slate-900/90 border border-slate-700/80 px-3 py-2 text-slate-200 hover:border-emerald-500/50 transition-colors shadow-sm ${className}`}>
-      <Globe className="h-4 w-4 text-emerald-400 shrink-0" />
+    <div className={`relative flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-3 py-2 text-slate-800 hover:border-emerald-400 transition-colors shadow-sm ${className}`}>
+      <Globe className="h-4 w-4 text-emerald-600 shrink-0" />
       <select
         value={currentLang}
         onChange={(e) => handleLanguageChange(e.target.value)}
         aria-label="Select Interface Language"
-        className="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer pr-1"
+        className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer pr-1"
       >
         {SUPPORTED_LANGUAGES.map((lang) => (
-          <option key={lang.code} value={lang.code} className="bg-slate-900 text-slate-100 py-1">
+          <option key={lang.code} value={lang.code} className="bg-white text-slate-900 py-1">
             {lang.flag} {lang.native} ({lang.label})
           </option>
         ))}
